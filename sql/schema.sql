@@ -1,13 +1,14 @@
 /* Profile table 1 row
 link table many rows */
 
-CREATE TABLE profile (
+CREATE IF NOT EXISTS TABLE profile (
     id INT PRIMARY KEY AUTO_INCREMENT,
     display_name VARCHAR(100) NOT NULL,
+    bio TEXT NULL, 
     a_url VARCHAR(255)
 );
 
-CREATE TABLE links (
+CREATE IF NOT EXISTS TABLE links (
     id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     l_url VARCHAR(255) NOT NULL,

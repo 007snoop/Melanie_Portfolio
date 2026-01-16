@@ -14,7 +14,7 @@ class profileRepo {
         $DB = getDB();
 
         $STMT = $DB->prepare(
-            'SELECT display_name, a_url 
+            'SELECT display_name, bio, a_url 
             FROM profile
             LIMIT 1'
         );
