@@ -27,3 +27,16 @@ body {
     text-decoration: none;
     border-radius: 6px;
 }
+
+.bento-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.bento-box {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 8px;
+    background: #fafafa;
+}

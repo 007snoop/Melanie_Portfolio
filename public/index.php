@@ -7,11 +7,15 @@ Main landing page
 <?php
 require_once __DIR__ . '/../src/profileRepo.php';
 require_once __DIR__ . '/../src/linkRepo.php';
+require_once __DIR__ . '/../src/boxRepo.php';
+
+$boxRepo = new BoxRepository();
+$boxes = $boxRepo->getBoxes();
 
 $profileRepo = new profileRepo();
-$linkRepo = new linkRepo();
-
 $profile = $profileRepo->getProfile();
+
+$linkRepo = new linkRepo();
 $links = $linkRepo->getVisibleLinks();
 
 ?>
@@ -46,6 +50,18 @@ $links = $linkRepo->getVisibleLinks();
                 </li>
             <?php endforeach; ?>
         </ul>
+    </div>
+    <div class="bento-container">
+        <?php foreach ($boxes as $box): ?>
+            <div class="bento-box">
+                <h3>
+                    <?= htmlspecialchars($box['title']) ?>
+                </h3>
+                <div class="bento-content">
+                    <?= $box['content'] ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
 </body>
 
