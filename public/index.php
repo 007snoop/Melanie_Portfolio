@@ -8,9 +8,10 @@ Main landing page
 require_once __DIR__ . '/../src/profileRepo.php';
 require_once __DIR__ . '/../src/linkRepo.php';
 require_once __DIR__ . '/../src/boxRepo.php';
+require_once __DIR__ . '/../src/boxView.php';
 
 $boxRepo = new BoxRepository();
-$boxes = $boxRepo->getBoxes();
+$boxes = $boxRepo->getBoxes(true);
 
 $profileRepo = new profileRepo();
 $profile = $profileRepo->getProfile();
@@ -26,7 +27,7 @@ $links = $linkRepo->getVisibleLinks();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Melanie Adams Portfolio</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -53,14 +54,7 @@ $links = $linkRepo->getVisibleLinks();
     </div>
     <div class="bento-container">
         <?php foreach ($boxes as $box): ?>
-            <div class="bento-box">
-                <h3>
-                    <?= htmlspecialchars($box['title']) ?>
-                </h3>
-                <div class="bento-content">
-                    <?= $box['content'] ?>
-                </div>
-            </div>
+                <?php renderBox($box, false)?>
         <?php endforeach; ?>
     </div>
 </body>
