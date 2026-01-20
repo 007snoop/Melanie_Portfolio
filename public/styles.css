@@ -41,3 +41,8 @@ body {
     background: #fafafa;
     margin-bottom: 1rem;
 }
+
+.bento-box.disabled {
+    opacity: 0.5;
+    background-color: #f0f0f0;
+}

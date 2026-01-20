@@ -2,7 +2,7 @@
 function renderBox(array $box, bool $editable = false)
 {
     ?>
-    <div class="bento-box" data-id="<?= $box['id'] ?>">
+    <div class="bento-box <?= !$box['on_off'] ? 'disabled' : '' ?>" data-id="<?= $box['id'] ?>">
         <?php if ($editable): ?>
             <form method="post" class="box-form">
                 <input type="hidden" name="action" value="update">
