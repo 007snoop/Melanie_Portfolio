@@ -8,17 +8,9 @@ admin dashboard controls for main landing
 <?php
 session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'update') {
-    if ($_POST['password'] === 'devpassword') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
+    if ($_POST['password'] === 'devpassword') { #change password later
         $_SESSION['admin'] = true;
-
-        $boxRepo->updateBox(
-            (int)$_POST['id'],
-            $_POST['title'],
-            $_POST['content'],
-            (int)$_POST['position'],
-            isset($_POST['on_off']) ? 1 : 0 
-        );
 
         header('Location: admin.php');
         exit;
@@ -33,6 +25,18 @@ if (!isset($_SESSION['admin'])):
     </form>
     <?php
     exit;
+    ?>
+ 
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update') {
+    $boxRepo->updateBox(
+        (int)$_POST['id'],
+        $_POST['title'],
+        $_POST['content'],
+        (int)$_POST['position'],
+        isset($_POST['on_off']) ? 1 : 0
+    );
+}
 endif;
 ?>
 
