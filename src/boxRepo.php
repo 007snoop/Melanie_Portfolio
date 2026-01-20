@@ -30,12 +30,13 @@ class BoxRepository
         $db = getDb();
 
         $stmt = $db->prepare(
-            'INSERT INTO boxes (title, content, position) VALUES (:title, :content, :position)'
+            'INSERT INTO boxes (title, content, position, on_off) VALUES (:title, :content, :position, :on_off)'
         );
         $stmt->execute([
             ':title' => $title,
             ':content' => $content,
-            ':position' => $position
+            ':position' => $position,
+            ':on_off' => 1
         ]);
 
         return (int) $db->lastInsertId();
