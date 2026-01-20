@@ -3,16 +3,23 @@ require_once __DIR__ . '/db.php';
 
 class BoxRepository
 {
-    public function getBoxes(): array
+    public function getBoxes(bool $onlyEnabled = true): array
     {
         $db = getDb();
-
-        $stmt = $db->prepare(
-            'SELECT id, title, content, position, on_off
+        if ($onlyEnabled) {
+            $stmt = $db->prepare(
+                'SELECT id, title, content, position, on_off
              FROM boxes
              WHERE on_off = 1
              ORDER BY position ASC'
-        );
+            );
+        } else {
+            $stmt = $db->prepare(
+                'SELECT id, title, content, position, on_off
+             FROM boxes
+             ORDER BY position ASC'
+            );
+        }
 
         $stmt->execute();
         return $stmt->fetchAll();
@@ -31,7 +38,7 @@ class BoxRepository
             ':position' => $position
         ]);
 
-        return (int)$db->lastInsertId();
+        return (int) $db->lastInsertId();
     }
 
     public function updateBox(int $id, string $title, string $content, int $position, bool $on_off)
@@ -40,7 +47,7 @@ class BoxRepository
 
         $stmt = $db->prepare(
             'UPDATE boxes
-             SET title = :title, content = :content, position = :position, on_off = :enabled
+             SET title = :title, content = :content, position = :position, on_off = :on_off
              WHERE id = :id'
         );
 
@@ -48,7 +55,7 @@ class BoxRepository
             ':title' => $title,
             ':content' => $content,
             ':position' => $position,
-            ':on_off' => $on_off,
+            ':on_off' => $on_off ? 1 : 0,
             ':id' => $id
         ]);
     }
