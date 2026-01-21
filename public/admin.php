@@ -38,7 +38,7 @@ if (!isset($_SESSION['admin'])): ?>
     exit;
 endif;
 
-
+/* ----- BOX HANDLER ----- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $boxRepo = new BoxRepository();
 
@@ -65,7 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $_POST['title'],
             $_POST['content'],
             (int) $_POST['position'],
-            isset($_POST['on_off']) ? 1 : 0
+            isset($_POST['on_off']) ? 1 : 0,
+            $_POST['size'] ?? '1x1'
         );
         header('Location: admin.php');
         exit;

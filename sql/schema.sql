@@ -33,3 +33,8 @@ CREATE TABLE IF NOT EXISTS admin (
     username VARCHAR(50) NOT NULL,
     password_hash VARCHAR(255) NOT NULL
 );
+
+/* add box editing */
+
+ALTER TABLE boxes 
+ADD COLUMN size VARCHAR(5) NOT NULL DEFAULT '1x1';

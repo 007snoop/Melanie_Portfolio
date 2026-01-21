@@ -57,6 +57,7 @@ $links = $linkRepo->getVisibleLinks();
                 <?php renderBox($box, false)?>
         <?php endforeach; ?>
     </div>
+    <script src="script.js"></script>
 </body>
 
 </html>

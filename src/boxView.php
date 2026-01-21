@@ -1,26 +1,38 @@
 <?php
 function renderBox(array $box, bool $editable = false)
 {
+    $size = $box['size'] ?? '1x1';
+    [$w, $h] = explode('x', $size);
     ?>
-    <div class="bento-box <?= !$box['on_off'] ? 'disabled' : '' ?>" data-id="<?= $box['id'] ?>">
+    <div class="bento-box <?= !$box['on_off'] ? 'disabled' : '' ?>" 
+     style="--w: <?= (int)$w ?>; --h: <?= (int)$h ?>" 
+     draggable="true" 
+     data-id="<?= $box['id'] ?>">
         <?php if ($editable): ?>
             <form method="post" class="box-form">
+
+                <select name="size" class="size-picker">
+                    <?php
+                    $current = $box['size'] ?? '1x1';
+                    foreach (['1x1' => 'Small', '2x1' => 'Wide', '1x2' => 'Tall', '2x2' => 'Large'] as $val => $label):
+                        ?>
+                        <option value="<?= $val ?>" <?= $current === $val ? 'selected' : '' ?>>
+                            <?= $label ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
                 <input type="hidden" name="action" value="update">
                 <input type="hidden" name="id" value="<?= $box['id'] ?>">
 
                 <input type="hidden" name="title">
                 <input type="hidden" name="content">
 
-                <div class="title-content"
-                    contenteditable="true"
-                    data-field="title"
-                    placeholder="title">
+                <div class="title-content" contenteditable="true" data-field="title" placeholder="title">
                     <?= $box['title'] ?>
                 </div>
 
-                <div class="box-content"
-                    contenteditable='true'
-                    data-field="content">
+                <div class="box-content" contenteditable='true' data-field="content">
                     <?= $box['content'] ?>
                 </div>
 
@@ -48,7 +60,7 @@ function renderBox(array $box, bool $editable = false)
 function renderAddBoxForm(): void
 {
     ?>
-   <div class="add-box-container">
+    <div class="add-box-container">
         <button id="show-add-box">+ Add New Box</button>
         <div id="add-box-form" style="display:none; margin-top:1em;">
             <form method="post">
@@ -61,24 +73,6 @@ function renderAddBoxForm(): void
             </form>
         </div>
     </div>
-
-    <script>
-        const showFormBtn = document.getElementById('show-add-box');
-        const addBoxForm = document.getElementById('add-box-form');
-        const cnclAddBtn = document.getElementById('cancel-add-box');
-
-        showFormBtn.addEventListener('click', () => {
-            if (addBoxForm.style.display === 'none') {
-                addBoxForm.style.display = 'block';
-                showFormBtn.style.display = 'none';
-            }
-        });
-
-        cnclAddBtn.addEventListener('click', () => {
-            addBoxForm.style.display = 'none';
-            showFormBtn.style.display = 'block';
-        });
-    </script>
     <?php
 }
 ?>
