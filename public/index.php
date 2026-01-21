@@ -31,7 +31,7 @@ $links = $linkRepo->getVisibleLinks();
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body data-page="public">
     <div class="profile">
         <h1>
             <?= htmlspecialchars($profile['display_name']) ?>

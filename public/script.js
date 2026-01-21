@@ -2,9 +2,12 @@
 const showFormBtn = document.getElementById("show-add-box");
 const addBoxForm = document.getElementById("add-box-form");
 const cnclAddBtn = document.getElementById("cancel-add-box");
+const isAdmin = document.body.dataset.page === 'admin';
 let dragged = null;
 
 // admin page
+if (!isAdmin) return;
+
 document.addEventListener("DOMContentLoaded", () => {
 	document.querySelectorAll(".box-form").forEach((form) => {
 		form.addEventListener("submit", () => {
@@ -22,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.querySelectorAll(".bento-box").forEach((box) => {
-	box.addEventListener("dragstart", (event) => {
+	box.addEventListener("dragstart", () => {
 		dragged = box;
 		box.classList.add("dragging");
 	});
@@ -53,7 +56,7 @@ document.addEventListener("change", (e) => {
     box.classList.add(`size-${size}`);
 });
 
-function saveOrder() {
+/* function saveOrder() {
 	const order = [...document.querySelectorAll(".bento-box")].map(
 		(el, index) => ({
 			id: el.dataset.id,
@@ -66,7 +69,7 @@ function saveOrder() {
 		headers: { "Content-type": "application/json" },
 		body: JSON.stringify(order),
 	});
-}
+} */
 
 showFormBtn.addEventListener("click", () => {
 	if (addBoxForm.style.display === "none") {

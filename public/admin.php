@@ -87,25 +87,31 @@ $boxes = $boxRepo->getBoxes(false);
 
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
     <link rel="stylesheet" href="styles.css">
-    
+
 </head>
 
-<h1>Manage Boxes</h1>
+<body data-page="admin">
+    <h1>Manage Boxes</h1>
 
-<?php renderAddBoxForm(); ?>
+    <?php renderAddBoxForm(); ?>
 
-<br> 
+    <br>
 
 
-<div class="bento-container admin-mode">
-    <?php foreach ($boxes as $box):
-        renderBox($box, true);
-    endforeach; ?>
-</div>
+    <div class="bento-container admin-mode">
+        <?php foreach ($boxes as $box):
+            renderBox($box, true);
+        endforeach; ?>
+    </div>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
+</body>
