@@ -1,9 +1,9 @@
-// variables 
+// variables
 const showFormBtn = document.getElementById("show-add-box");
 const addBoxForm = document.getElementById("add-box-form");
 const cnclAddBtn = document.getElementById("cancel-add-box");
-const isAdmin = document.body.dataset.page === 'admin';
-const container = document.querySelector('.bento-container');
+const isAdmin = document.body.dataset.page === "admin";
+const container = document.querySelector(".bento-container");
 let dragged = null;
 
 // admin page
@@ -23,48 +23,68 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 });
 
-
 // drag logic for box
-if (container && document.body.dataset.page === 'admin') {
-    container.addEventListener("dragstart", (e) => {
-        const box = e.target.closest('.bento-box');
-        if (!box) return;
+if (container && document.body.dataset.page === "admin") {
+	container.addEventListener("dragstart", (e) => {
+		const box = e.target.closest(".bento-box");
+		if (!box) return;
 
-        dragged = box; 
-        box.classList.add('dragging');
-    });
+		dragged = box;
+		box.classList.add("dragging");
+	});
 
-    container.addEventListener('dragend', () => {
-        if (!dragged) return;
-        
+	container.addEventListener("dragend", () => {
+		if (!dragged) return;
+
         dragged.classList.remove('dragging');
         dragged = null;
-    });
 
-    container.addEventListener('dragover', (e) => {
-        e.preventDefault();
-    });
+		container
+			.querySelectorAll(".drop-target")
+			.forEach((el) => el.classList.remove("drop-target"));
 
-    container.addEventListener('drop', (e) => {
-        e.preventDefault();
+	});
 
-        const target = e.target.closest('.bento-box');
-        if (!dragged || !target || dragged === target) return;
+	container.addEventListener("dragover", (e) => {
+		e.preventDefault();
 
-        container.insertBefore(dragged, target);
-        saveOrder();
-    });
+		const target = e.target.closest(".bento-box");
+
+		if (!target || target === dragged) return;
+
+		target.classList.add("drop-target");
+	});
+
+	container.addEventListener("dragleave", (e) => {
+		const target = e.target.closest(".bento-box");
+
+		if (!target) return;
+
+		target.classList.remove("drop-target");
+	});
+
+	container.addEventListener("drop", (e) => {
+		e.preventDefault();
+
+		const target = e.target.closest(".bento-box");
+
+		if (!dragged || !target || dragged === target) return;
+
+        target.classList.remove('drop-target');
+		container.insertBefore(dragged, target);
+		saveOrder();
+	});
 }
 
 // helper for displaying size
 document.addEventListener("change", (e) => {
 	if (!e.target.classList.contains("size-picker")) return;
 
-    const box = e.target.closest('.bento-box');
-    const size = e.target.value;
+	const box = e.target.closest(".bento-box");
+	const size = e.target.value;
 
-    box.classList.remove('size-1x1', 'size-2x1', 'size-1x2', 'size-2x2');
-    box.classList.add(`size-${size}`);
+	box.classList.remove("size-1x1", "size-2x1", "size-1x2", "size-2x2");
+	box.classList.add(`size-${size}`);
 });
 
 function saveOrder() {
@@ -95,22 +115,22 @@ cnclAddBtn.addEventListener("click", () => {
 });
 
 function autoResizeEditable(el) {
-    el.style.height = 'auto';
-    el.style.height = el.scrollHeight + 'px';
+	el.style.height = "auto";
+	el.style.height = el.scrollHeight + "px";
 }
 
-document.querySelectorAll('[contenteditable]').forEach(el => {
-    autoResizeEditable(el);
+document.querySelectorAll("[contenteditable]").forEach((el) => {
+	autoResizeEditable(el);
 
-    el.addEventListener('input', () => {
-        autoResizeEditable(el);
-    });
+	el.addEventListener("input", () => {
+		autoResizeEditable(el);
+	});
 
-    el.addEventListener('focus', () => {
-        el.closest('.bento-box')?.classList.add('editing');
-    });
+	el.addEventListener("focus", () => {
+		el.closest(".bento-box")?.classList.add("editing");
+	});
 
-    el.addEventListener('blur', () => {
-        el.closest('.bento-box')?.classList.remove('editing');
-    });
+	el.addEventListener("blur", () => {
+		el.closest(".bento-box")?.classList.remove("editing");
+	});
 });

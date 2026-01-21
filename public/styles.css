@@ -119,3 +119,12 @@ body {
     content: "Write something…";
     opacity: 0.4;
 }
+
+/* dragging css */
+.bento-box.dragging {
+    opacity: 0.5;
+}
+
+.bento-box.drop-target {
+    outline: 2px dashed #888;
+}
