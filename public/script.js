@@ -36,13 +36,12 @@ if (container && document.body.dataset.page === "admin") {
 	container.addEventListener("dragend", () => {
 		if (!dragged) return;
 
-        dragged.classList.remove('dragging');
-        dragged = null;
+		dragged.classList.remove("dragging");
+		dragged = null;
 
 		container
 			.querySelectorAll(".drop-target")
 			.forEach((el) => el.classList.remove("drop-target"));
-
 	});
 
 	container.addEventListener("dragover", (e) => {
@@ -70,7 +69,7 @@ if (container && document.body.dataset.page === "admin") {
 
 		if (!dragged || !target || dragged === target) return;
 
-        target.classList.remove('drop-target');
+		target.classList.remove("drop-target");
 		container.insertBefore(dragged, target);
 		saveOrder();
 	});
@@ -87,20 +86,21 @@ document.addEventListener("change", (e) => {
 	box.classList.add(`size-${size}`);
 });
 
-function saveOrder() {
-	const order = [...document.querySelectorAll(".bento-box")].map(
-		(el, index) => ({
-			id: el.dataset.id,
-			position: index,
-		}),
-	);
+document.addEventListener("click", (e) => {
+	const btn = e.target.closest(".size-btn");
+	if (!btn) return;
 
-	fetch("/api/saveOrder.php", {
-		method: "POST",
-		headers: { "Content-type": "application/json" },
-		body: JSON.stringify(order),
-	});
-}
+
+    const picker = btn.closest('.size-picker');
+    const hidden = picker.querySelector('input[name="size"]');
+	const box = btn.closest(".bento-box");
+	hidden.value = btn.dataset.size;
+
+	picker.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    box.style.setProperty("--size", btn.dataset.size);
+});
 
 showFormBtn.addEventListener("click", () => {
 	if (addBoxForm.style.display === "none") {
@@ -113,11 +113,6 @@ cnclAddBtn.addEventListener("click", () => {
 	addBoxForm.style.display = "none";
 	showFormBtn.style.display = "block";
 });
-
-function autoResizeEditable(el) {
-	el.style.height = "auto";
-	el.style.height = el.scrollHeight + "px";
-}
 
 document.querySelectorAll("[contenteditable]").forEach((el) => {
 	autoResizeEditable(el);
@@ -134,3 +129,43 @@ document.querySelectorAll("[contenteditable]").forEach((el) => {
 		el.closest(".bento-box")?.classList.remove("editing");
 	});
 });
+
+/* Functions */
+function saveOrder() {
+	const order = [...document.querySelectorAll(".bento-box")].map(
+		(el, index) => ({
+			id: el.dataset.id,
+			position: index,
+		}),
+	);
+
+	fetch("/api/saveOrder.php", {
+		method: "POST",
+		headers: { "Content-type": "application/json" },
+		body: JSON.stringify(order),
+	});
+}
+
+function autoResizeEditable(el) {
+	el.style.height = "auto";
+	el.style.height = el.scrollHeight + "px";
+}
+function updateBox(b) {
+	const payload = {
+		action: "update",
+		id: box.dataset.id,
+		title: box.querySelector('[data-field="title"]')?.innerText || "",
+		content: box.querySelector('[data-field="content"]')?.innerText || "",
+		position: [...container.children].indexOf(box),
+		on_off: !box.classList.contains("disabled"),
+		size: box.dataset.size,
+	};
+
+	fetch("admin.php", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(payload),
+	});
+}

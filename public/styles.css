@@ -50,6 +50,7 @@ body {
     grid-row: span var(--h, 1);
     overflow: visible;
     min-height: 0;
+    will-change: transform;
 }
 
 .bento-box.editing {
@@ -86,6 +87,28 @@ body {
 .size-2x1 { grid-column: span 2; grid-row: span 1; }
 .size-1x2 { grid-column: span 1; grid-row: span 2; }
 .size-2x2 { grid-column: span 2; grid-row: span 2; }
+
+.size-picker {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem;
+}
+
+.size-btn {
+    padding: 0.4rem;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #1a1a1a;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.size-btn.active {
+    background: #333;
+    color: #fff;
+    border-color: #666;
+}
 
 .box-title-input {
     margin: 0 0 0.5rem 0;

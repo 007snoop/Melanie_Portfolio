@@ -1,27 +1,30 @@
 <?php
 function renderBox(array $box, bool $editable = false)
 {
-    $size = $box['size'] ?? '1x1';
-    [$w, $h] = explode('x', $size);
+    $current = $box['size'] ?? '1x1';
+    [$w, $h] = explode('x', $current);
     ?>
-    <div class="bento-box <?= !$box['on_off'] ? 'disabled' : '' ?>" 
-     style="--w: <?= (int)$w ?>; --h: <?= (int)$h ?>" 
-     draggable="true" 
-     data-id="<?= $box['id'] ?>">
+    <div class="bento-box <?= !$box['on_off'] ? 'disabled' : '' ?>" style="--w: <?= (int) $w ?>; --h: <?= (int) $h ?>"
+        draggable="true" data-id="<?= $box['id'] ?>">
         <?php if ($editable): ?>
             <form method="post" class="box-form">
 
-                <select name="size" class="size-picker">
-                    <?php
-                    $current = $box['size'] ?? '1x1';
-                    foreach (['1x1' => 'Small', '2x1' => 'Wide', '1x2' => 'Tall', '2x2' => 'Large'] as $val => $label):
-                        ?>
-                        <option value="<?= $val ?>" <?= $current === $val ? 'selected' : '' ?>>
-                            <?= $label ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                <div class="size-picker" data-current="<?= $current ?>">
+                    <input type="hidden" name="size" value="<?= $current ?>">
 
+                    <?php
+                    foreach ([
+                        '1x1' => 'Small',
+                        '2x1' => 'Wide',
+                        '1x2' => 'Tall',
+                        '2x2' => 'Large'
+                    ] as $val => $label):
+                        ?>
+                        <button type="button" class="size-btn <?= $current === $val ? 'active' : '' ?>" data-size="<?= $val ?>">
+                            <?= $label ?>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
                 <input type="hidden" name="action" value="update">
                 <input type="hidden" name="id" value="<?= $box['id'] ?>">
 

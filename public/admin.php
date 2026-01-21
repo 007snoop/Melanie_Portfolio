@@ -8,12 +8,19 @@ admin dashboard controls for main landing
 <?php
 session_start();
 $dotenvPath = __DIR__ . '/../.env';
+$isJson = str_contains($_SERVER['CONTENT_TYPE'] ?? '', 'application/json');
+$env = parse_ini_file($dotenvPath);
+
 
 if (!file_exists($dotenvPath)) {
     throw new Exception('.env not found');
 }
 
-$env = parse_ini_file($dotenvPath);
+if ($isJson) {
+    $data = json_decode(file_get_contents('php://input'), true);
+} else {
+    $data = $_POST;
+}
 
 require_once __DIR__ . '/../src/boxRepo.php';
 require_once __DIR__ . '/../src/boxView.php';
@@ -60,13 +67,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             exit;
         }
 
+        $size = $data['size'] ?? '1x1';
+
         $boxRepo->updateBox(
             (int) $_POST['id'],
             $_POST['title'],
             $_POST['content'],
             (int) $_POST['position'],
             isset($_POST['on_off']) ? 1 : 0,
-            $_POST['size'] ?? '1x1'
+            $size
         );
         header('Location: admin.php');
         exit;
