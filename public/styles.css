@@ -41,6 +41,7 @@ body {
 }
 
 .bento-box {
+    position: relative;
     border: 1px solid #ccc;
     padding: 1rem;
     border-radius: 8px;
@@ -92,6 +93,23 @@ body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.25rem;
+}
+
+.size-picker-overlay {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 0.25rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.bento-box:hover .size-picker-overlay {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .size-btn {

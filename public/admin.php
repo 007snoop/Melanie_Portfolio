@@ -67,15 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             exit;
         }
 
-        $size = $data['size'] ?? '1x1';
-
         $boxRepo->updateBox(
             (int) $_POST['id'],
             $_POST['title'],
             $_POST['content'],
             (int) $_POST['position'],
             isset($_POST['on_off']) ? 1 : 0,
-            $size
+            $_POST['size']
         );
         header('Location: admin.php');
         exit;

@@ -86,20 +86,25 @@ document.addEventListener("change", (e) => {
 	box.classList.add(`size-${size}`);
 });
 
-document.addEventListener("click", (e) => {
-	const btn = e.target.closest(".size-btn");
-	if (!btn) return;
+document.querySelectorAll('.bento-box').forEach(box => {
+    const picker = box.querySelector('.size-picker-overlay');
+    if (!picker) return;
 
+    picker.addEventListener('click', e => {
+        const btn = e.target.closest('.size-btn');
+        if (!btn) return;
 
-    const picker = btn.closest('.size-picker');
-    const hidden = picker.querySelector('input[name="size"]');
-	const box = btn.closest(".bento-box");
-	hidden.value = btn.dataset.size;
+        const hidden = box.querySelector('input[name="size"]');
+        hidden.value = btn.dataset.size;
 
-	picker.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+        picker.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-    box.style.setProperty("--size", btn.dataset.size);
+        const [w,h] = btn.dataset.size.split('x');
+
+        box.style.setProperty('--w',w);
+        box.style.setProperty('--h',h);
+    });
 });
 
 showFormBtn.addEventListener("click", () => {
