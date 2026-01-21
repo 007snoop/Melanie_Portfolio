@@ -63,6 +63,21 @@ class BoxRepository
         ]);
     }
 
+    public function updatePosition(int $id, int $position) {
+        $db = getDB();
+
+        $stmt = $db->prepare(
+            'UPDATE boxes
+            SET position = :position 
+            WHERE id = :id'
+        );
+
+        $stmt->execute([
+            ':position' => $position,
+            ':id' => $id
+        ]);
+    }
+
     public function deleteBox(int $id)
     {
         $db = getDb();

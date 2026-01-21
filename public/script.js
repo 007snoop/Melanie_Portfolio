@@ -3,11 +3,12 @@ const showFormBtn = document.getElementById("show-add-box");
 const addBoxForm = document.getElementById("add-box-form");
 const cnclAddBtn = document.getElementById("cancel-add-box");
 const isAdmin = document.body.dataset.page === 'admin';
+const container = document.querySelector('.bento-container');
 let dragged = null;
 
 // admin page
-if (!isAdmin) return;
 
+// makes sure DOM is loaded for DB updates
 document.addEventListener("DOMContentLoaded", () => {
 	document.querySelectorAll(".box-form").forEach((form) => {
 		form.addEventListener("submit", () => {
@@ -23,29 +24,39 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+// drag logic for box
+if (container && document.body.dataset.page === 'admin') {
+    container.addEventListener("dragstart", (e) => {
+        const box = e.target.closest('.bento-box');
+        if (!box) return;
 
-document.querySelectorAll(".bento-box").forEach((box) => {
-	box.addEventListener("dragstart", () => {
-		dragged = box;
-		box.classList.add("dragging");
-	});
+        dragged = box; 
+        box.classList.add('dragging');
+    });
 
-	box.addEventListener("dragend", () => {
-		dragged.classList.remove("dragging");
-		dragged = null;
-	});
+    container.addEventListener('dragend', () => {
+        if (!dragged) return;
+        
+        dragged.classList.remove('dragging');
+        dragged = null;
+    });
 
-	box.addEventListener("dragover", (event) => event.preventDefault());
+    container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
 
-	box.addEventListener("drop", (event) => {
-		event.preventDefault();
-		if (dragged && dragged !== box) {
-			box.parentNode.insertBefore(dragged, box);
-			saveOrder();
-		}
-	});
-});
+    container.addEventListener('drop', (e) => {
+        e.preventDefault();
 
+        const target = e.target.closest('.bento-box');
+        if (!dragged || !target || dragged === target) return;
+
+        container.insertBefore(dragged, target);
+        saveOrder();
+    });
+}
+
+// helper for displaying size
 document.addEventListener("change", (e) => {
 	if (!e.target.classList.contains("size-picker")) return;
 
@@ -56,7 +67,7 @@ document.addEventListener("change", (e) => {
     box.classList.add(`size-${size}`);
 });
 
-/* function saveOrder() {
+function saveOrder() {
 	const order = [...document.querySelectorAll(".bento-box")].map(
 		(el, index) => ({
 			id: el.dataset.id,
@@ -64,12 +75,12 @@ document.addEventListener("change", (e) => {
 		}),
 	);
 
-	fetch("saveOrder.php", {
+	fetch("/api/saveOrder.php", {
 		method: "POST",
 		headers: { "Content-type": "application/json" },
 		body: JSON.stringify(order),
 	});
-} */
+}
 
 showFormBtn.addEventListener("click", () => {
 	if (addBoxForm.style.display === "none") {
