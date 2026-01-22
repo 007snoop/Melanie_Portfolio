@@ -115,6 +115,7 @@ $boxes = $boxRepo->getBoxes(false);
 
 
     <div class="bento-container admin-mode">
+        <div class="grid-overlay" hidden></div>
         <?php foreach ($boxes as $box):
             renderBox($box, true);
         endforeach; ?>

@@ -4,8 +4,10 @@ function renderBox(array $box, bool $editable = false)
     $current = $box['size'] ?? '1x1';
     [$w, $h] = explode('x', $current);
     ?>
-    <div class="bento-item" style="--w: <?= (int) $w ?>; --h: <?= (int) $h ?>;" data-id="<?= $box['id'] ?>">
-        <div class="bento-box <?= !$box['on_off'] ? 'disabled' : '' ?>" draggable="<?= $editable ? 'true' : 'false' ?>">
+    <div class="bento-item" style="
+    --w: <?= (int) $w ?>; 
+    --h: <?= (int) $h ?>;" data-id="<?= $box['id'] ?>" draggable="<?= $editable ? 'true' : 'false' ?>">
+        <div class="bento-box <?= !$box['on_off'] ? 'disabled' : '' ?>">
 
             <?php if ($editable): ?>
 

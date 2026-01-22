@@ -31,6 +31,7 @@ if (container && document.body.dataset.page === "admin") {
 
 		dragged = box;
 		box.classList.add("dragging");
+        showGridOverlay();
 	});
 
 	container.addEventListener("dragend", () => {
@@ -47,11 +48,26 @@ if (container && document.body.dataset.page === "admin") {
 	container.addEventListener("dragover", (e) => {
 		e.preventDefault();
 
-		const target = e.target.closest(".bento-item");
+		const cells = document.querySelectorAll('.grid-cell');
+        let closest = null;
+        let minDist = Infinity;
 
-		if (!target || target === dragged) return;
+        cells.forEach(cell => {
+            const rect = cell.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
 
-		target.classList.add("drop-target");
+            const dist = Math.hypot(cx - e.clientX, cy - e.clientY);
+
+            if (dist < minDist) {
+                minDist = dist;
+                closest = cell;
+            }
+
+            cell.classList.remove('active');
+        });
+
+        closest?.classList.add('active');
 	});
 
 	container.addEventListener("dragleave", (e) => {
@@ -65,13 +81,18 @@ if (container && document.body.dataset.page === "admin") {
 	container.addEventListener("drop", (e) => {
 		e.preventDefault();
 
-		const target = e.target.closest(".bento-item");
+		const active = document.querySelector('.grid-cell.active');
+        if (!active || !dragged) {
+            return;
+        }
+        
+        const col = active.dataset.col;
+        const row = active.dataset.row;
 
-		if (!dragged || !target || dragged === target) return;
+        dragged.style.gridColumnStart = col;
+        dragged.style.gridRowStart = row;
 
-		target.classList.remove("drop-target");
-		container.insertBefore(dragged, target);
-		saveOrder();
+        hideGridOverlay();
 	});
 }
 
@@ -202,4 +223,31 @@ function updateBox(b) {
 		},
 		body: JSON.stringify(payload),
 	});
+}
+
+/* Box Slot system overlay */
+function showGridOverlay() {
+    const overlay = document.querySelector('.grid-overlay');
+    overlay.innerHTML = '';
+    overlay.hidden = false;
+
+    const cols = 4;
+    const rows = 10;
+
+    for (let r = 1; r <= rows; r++) {
+        for (let c = 1; c <= cols; c++) {
+            const element = document.createElement('div');
+
+            element.className = 'grid-cell';
+            element.dataset.col = c;
+            element.dataset.row = r;
+            overlay.appendChild(element);
+            
+        }
+    }
+}
+
+function hideGridOverlay() {
+    const overlay = document.querySelector('.grid-overlay');
+    overlay.hidden = true;
 }

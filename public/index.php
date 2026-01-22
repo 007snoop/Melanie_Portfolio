@@ -53,8 +53,10 @@ $links = $linkRepo->getVisibleLinks();
         </ul>
     </div>
     <div class="bento-container">
+
+        <div class="grid-overlay" hidden></div>
         <?php foreach ($boxes as $box): ?>
-                <?php renderBox($box, false)?>
+            <?php renderBox($box, false) ?>
         <?php endforeach; ?>
     </div>
     <script src="script.js"></script>
