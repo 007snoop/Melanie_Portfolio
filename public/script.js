@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // drag logic for box
 if (container && document.body.dataset.page === "admin") {
 	container.addEventListener("dragstart", (e) => {
-		const box = e.target.closest(".bento-box");
+		const box = e.target.closest(".bento-item");
 		if (!box) return;
 
 		dragged = box;
@@ -47,7 +47,7 @@ if (container && document.body.dataset.page === "admin") {
 	container.addEventListener("dragover", (e) => {
 		e.preventDefault();
 
-		const target = e.target.closest(".bento-box");
+		const target = e.target.closest(".bento-item");
 
 		if (!target || target === dragged) return;
 
@@ -55,7 +55,7 @@ if (container && document.body.dataset.page === "admin") {
 	});
 
 	container.addEventListener("dragleave", (e) => {
-		const target = e.target.closest(".bento-box");
+		const target = e.target.closest(".bento-item");
 
 		if (!target) return;
 
@@ -65,7 +65,7 @@ if (container && document.body.dataset.page === "admin") {
 	container.addEventListener("drop", (e) => {
 		e.preventDefault();
 
-		const target = e.target.closest(".bento-box");
+		const target = e.target.closest(".bento-item");
 
 		if (!dragged || !target || dragged === target) return;
 
@@ -79,14 +79,14 @@ if (container && document.body.dataset.page === "admin") {
 document.addEventListener("change", (e) => {
 	if (!e.target.classList.contains("size-picker")) return;
 
-	const box = e.target.closest(".bento-box");
+	const box = e.target.closest(".bento-item");
 	const size = e.target.value;
 
 	box.classList.remove("size-1x1", "size-2x1", "size-1x2", "size-2x2");
 	box.classList.add(`size-${size}`);
 });
 
-document.querySelectorAll('.bento-box').forEach(box => {
+document.querySelectorAll('.bento-item').forEach(box => {
     const picker = box.querySelector('.size-picker-overlay');
     if (!picker) return;
 
@@ -109,27 +109,31 @@ document.querySelectorAll('.bento-box').forEach(box => {
 
 document.addEventListener('click', (e) => {
     const toggle = e.target.closest('.size-toggle');
-    const menu = e.target.closest('.size-menu');
+    const btn = e.target.closest('.size-btn');
 
     if (toggle) {
-        const box = toggle.closest('.bento-box');
-        box.querySelector('.size-menu').toggleAttribute('hidden');
+        const item = toggle.closest('.bento-item');
+        item.querySelector('.size-menu').toggleAttribute('hidden');
         return;
     }
 
-    if (e.target.matches('.size-btn')) {
-        const box = e.target.closest('.bento-box');
-        const size = e.target.dataset.size;
+    if (btn) {
+        const item = btn.closest('.bento-item');
+        const box = item.querySelector('.bento-box');
+        const size = btn.dataset.size;
 
-        box.style.setProperty('--w', size[0]);
-        box.style.setProperty('--h', size[2]);
+        const [w, h] = size.split('x');
+
+        item.style.setProperty('--w', w);
+        item.style.setProperty('--h', h);
 
         box.querySelector('input[name="size"]').value = size;
-        box.querySelector('.size-menu').setAttribute('hidden', true);
+        item.querySelector('.size-menu').hidden = true;
     }
 
-    document.querySelectorAll('.size-menu:not([hidden])')
-    .forEach(menu => menu.setAttribute('hidden', true));
+    document
+        .querySelectorAll('.size-menu:not([hidden])')
+        .forEach(menu => menu.hidden = true);
 });
 
 showFormBtn.addEventListener("click", () => {
@@ -152,17 +156,17 @@ document.querySelectorAll("[contenteditable]").forEach((el) => {
 	});
 
 	el.addEventListener("focus", () => {
-		el.closest(".bento-box")?.classList.add("editing");
+		el.closest(".bento-item")?.classList.add("editing");
 	});
 
 	el.addEventListener("blur", () => {
-		el.closest(".bento-box")?.classList.remove("editing");
+		el.closest(".bento-item")?.classList.remove("editing");
 	});
 });
 
 /* Functions */
 function saveOrder() {
-	const order = [...document.querySelectorAll(".bento-box")].map(
+	const order = [...document.querySelectorAll(".bento-item")].map(
 		(el, index) => ({
 			id: el.dataset.id,
 			position: index,
