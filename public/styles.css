@@ -89,7 +89,7 @@ body {
 .size-1x2 { grid-column: span 1; grid-row: span 2; }
 .size-2x2 { grid-column: span 2; grid-row: span 2; }
 
-.size-picker {
+/* .size-picker {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.25rem;
@@ -108,18 +108,50 @@ body {
 }
 
 .bento-box:hover .size-picker-overlay {
+    display: grid;
     opacity: 1;
     pointer-events: auto;
 }
-
+ */
 .size-btn {
-    padding: 0.4rem;
+    padding: 0.25rem 0.5rem;
     border-radius: 6px;
     border: 1px solid #333;
-    background: #1a1a1a;
+    background: #222;
     color: #aaa;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+}
+
+.size-toggle {
+     position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.4rem;
+    border-radius: 999px;
+    border: 1px solid #666;
+    background: #222;
+    color: #fff;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.size-menu {
+    position: absolute;
+    top: 1.6rem;
+    right: 0;
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 0.25rem;
+    background: #111;
+    padding: 0.4rem;
+    border-radius: 8px;
+    z-index: 10;
+}
+
+.size-menu[hidden] {
+    display: none;
 }
 
 .size-btn.active {

@@ -107,6 +107,31 @@ document.querySelectorAll('.bento-box').forEach(box => {
     });
 });
 
+document.addEventListener('click', (e) => {
+    const toggle = e.target.closest('.size-toggle');
+    const menu = e.target.closest('.size-menu');
+
+    if (toggle) {
+        const box = toggle.closest('.bento-box');
+        box.querySelector('.size-menu').toggleAttribute('hidden');
+        return;
+    }
+
+    if (e.target.matches('.size-btn')) {
+        const box = e.target.closest('.bento-box');
+        const size = e.target.dataset.size;
+
+        box.style.setProperty('--w', size[0]);
+        box.style.setProperty('--h', size[2]);
+
+        box.querySelector('input[name="size"]').value = size;
+        box.querySelector('.size-menu').setAttribute('hidden', true);
+    }
+
+    document.querySelectorAll('.size-menu:not([hidden])')
+    .forEach(menu => menu.setAttribute('hidden', true));
+});
+
 showFormBtn.addEventListener("click", () => {
 	if (addBoxForm.style.display === "none") {
 		addBoxForm.style.display = "block";
