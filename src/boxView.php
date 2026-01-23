@@ -4,10 +4,8 @@ function renderBox(array $box, bool $editable = false)
     $current = $box['size'] ?? '1x1';
     [$w, $h] = explode('x', $current);
     ?>
-    <div class="bento-item" style="
-    --w: <?= (int) $w ?>; 
-    --h: <?= (int) $h ?>;" data-id="<?= $box['id'] ?>" draggable="<?= $editable ? 'true' : 'false' ?>">
-        <div class="bento-box <?= !$box['on_off'] ? 'disabled' : '' ?>">
+    <div class="grid-stack-item" data-id="<?= $box['id'] ?>" gs-x="0" gs-y="0" gs-w="<?= $w ?>" gs-h="<?= $h ?>">
+        <div class="grid-stack-item-content <?= !$box['on_off'] ? 'disabled' : '' ?>">
 
             <?php if ($editable): ?>
 
@@ -30,7 +28,6 @@ function renderBox(array $box, bool $editable = false)
                     </div>
 
                     <!-- Position and on/off -->
-                    <input type="number" name="position" value="<?= $box['position'] ?>" hidden>
                     <label>
                         Enabled
                         <input type="checkbox" name="on_off" <?= $box['on_off'] ? 'checked' : '' ?>>
@@ -48,27 +45,6 @@ function renderBox(array $box, bool $editable = false)
                 </div>
             <?php endif; ?>
         </div>
-
-        <?php if ($editable): ?>
-            <div class="box-controls">
-                <button type="button" class="size-toggle" aria-label="Change Size">
-                    <?= strtoupper($current) ?>
-                </button>
-
-                <div class="size-menu" hidden>
-                    <?php foreach ([
-                        '1x1' => 'S',
-                        '2x1' => 'W',
-                        '1x2' => 'T',
-                        '2x2' => 'L'
-                    ] as $val => $label): ?>
-                        <button type="button" class="size-btn" <?= $current === $val ? 'active' : '' ?> data-size="<?= $val ?>">
-                            <?= $label ?>
-                        </button>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        <?php endif; ?>
     </div>
     <?php
 }

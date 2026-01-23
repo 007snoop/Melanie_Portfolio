@@ -103,7 +103,7 @@ $boxes = $boxRepo->getBoxes(false);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
     <link rel="stylesheet" href="styles.css">
-
+    <link href=" https://cdn.jsdelivr.net/npm/gridstack@12.4.2/dist/gridstack.min.css " rel="stylesheet">
 </head>
 
 <body data-page="admin">
@@ -114,12 +114,11 @@ $boxes = $boxRepo->getBoxes(false);
     <br>
 
 
-    <div class="bento-container admin-mode">
-        <div class="grid-overlay" hidden></div>
+    <div class="grid-stack admin-mode">
         <?php foreach ($boxes as $box):
             renderBox($box, true);
         endforeach; ?>
     </div>
-
+<script src=" https://cdn.jsdelivr.net/npm/gridstack@12.4.2/dist/gridstack-all.min.js "></script>
     <script src="script.js"></script>
 </body>
