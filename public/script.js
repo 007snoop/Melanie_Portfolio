@@ -104,12 +104,47 @@ function addBox() {
 			item.dataset.id = data.id;
 
 			item.innerHTML = `
-        <div class="grid-stack-item-content">
-            <div class="title-content" contenteditable="true">New Box</div>
-            <div class="box-content" contenteditable="true">Content</div>
-        </div>
+       <div class="grid-stack-item-content">
+                <form class="box-form">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="id" value="${data.id}">
+                    <input type="hidden" name="title">
+                    <input type="hidden" name="content">
+                    <input type="hidden" name="size" value="1x1">
+                    
+                    <div class="title-content" contenteditable="true" data-field="title">New Box</div>
+                    <div class="box-content" contenteditable="true" data-field="content">Content</div>
+                    
+                    <label>
+                        Enabled
+                        <input type="checkbox" name="on_off" checked>
+                    </label>
+                    
+                    <button type="submit">Save</button>
+                </form>
+                <form method="post" style="display:inline;">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="id" value="${data.id}">
+                    <button type="submit" onclick="return confirm('Delete this box?')">Delete</button>
+                </form>
+            </div>
         `;
 			window.grid.makeWidget(item, { w: 1, h: 1 });
+
+            const form = item.querySelector('.box-form');
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                form.querySelectorAll('[contenteditable]').forEach((el) => {
+                    const field = el.dataset.field;
+                    const hidden = form.querySelector(`input[name="${field}"]`);
+
+                    if (hidden) {
+                        hidden.value = el.innerText.trim();
+                    }
+                });
+                updateBox(item);
+            });
 		});
 }
 

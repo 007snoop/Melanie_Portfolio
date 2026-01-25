@@ -61,16 +61,6 @@ function renderAddBoxForm(): void
     ?>
     <div class="add-box-container">
         <button id="show-add-box">+ Add New Box</button>
-        <div id="add-box-form" style="display:none; margin-top:1em;">
-            <form method="post">
-                <input type="hidden" name="action" value="add">
-                <input type="text" name="title" placeholder="Box title" required><br>
-                <textarea name="content" placeholder="Box content" required></textarea><br>
-                <input type="number" name="position" placeholder="Position" value="0" required><br>
-                <button type="button" id="cancel-add-box">Cancel</button>
-                <button type="submit">Add Box</button>
-            </form>
-        </div>
     </div>
     <?php
 }
