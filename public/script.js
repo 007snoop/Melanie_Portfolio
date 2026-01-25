@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		animate: true,
 		float: false,
 		disableOneColumnMode: true,
+		disableDrag: !window.IS_ADMIN,
+		disableResize: !window.IS_ADMIN,
 	});
 	window.grid = grid;
 
@@ -26,21 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	});
 
-	grid.on("change", (event, items) => {
-		const data = items.map((i) => ({
-			id: i.el.dataset.id,
-			x: i.x,
-			y: i.y,
-			w: i.w,
-			h: i.h,
-		}));
-
-		fetch("/api/saveOrder.php", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ order: data }),
-		});
-	});
+	grid.on("change", saveOrder);
 
 	document.querySelectorAll("[contenteditable]").forEach((el) => {
 		const resize = () => {
@@ -51,46 +39,22 @@ document.addEventListener("DOMContentLoaded", () => {
 		resize();
 	});
 
-	const addBtn = document.getElementById("show-add-box");
-	addBtn.addEventListener("click", () => {
-		const id = Date.now();
-		const newBox = {
-			id,
-			title: "New Box",
-			content: "Content",
-		};
-		const item = document.createElement("div");
-
-		item.classList.add("grid-stack-item");
-		item.dataset.id = newBox.id;
-
-		item.innerHTML = `
-            <div class="grid-stack-item-content">
-                <form method="post" class="box-form">
-                    <input type="hidden" name="action" value="update">
-                    <input type="hidden" name="id" value="${newBox.id}">
-                    <input type="hidden" name="title">
-                    <input type="hidden" name="content">
-                    <div class="title-content" contenteditable="true" data-field="title">
-                        ${newBox.title}
-                    </div>
-                    <div class="box-content" contenteditable="true" data-field="content">
-                        ${newBox.content}
-                    </div>
-                    <button type="submit">Save</button>
-                </form>
-            </div>
-        `;
-
-		grid.makeWidget(item, { width: 1, height: 1, x: 0, y: 0 });
-	});
+	if (window.IS_ADMIN === true) {
+		const addBtn = document.getElementById("show-add-box");
+		addBtn.addEventListener("click", () => {
+			addBox();
+		});
+	}
 });
 
 /* Functions */
-function saveOrder() {
-	const order = [...document.querySelectorAll(".bento-item")].map((el) => ({
-		id: el.dataset.id,
-		size: el.dataset.size || "1x1",
+function saveOrder(event, items) {
+	const order = items.map((i) => ({
+		id: i.el.dataset.id,
+		x: i.x,
+		y: i.y,
+		w: i.w,
+		h: i.h,
 	}));
 
 	fetch("/api/saveOrder.php", {
@@ -124,35 +88,29 @@ function updateBox(b) {
 	});
 }
 
-function addBox(boxData) {
-	const item = document.createElement("div");
-	item.classList.add("grid-stack-item");
-	item.dataset.id = boxData.id;
+function addBox() {
+	fetch("/api/addBox.php", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({
+			title: "New Box",
+			content: "Content",
+		}),
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			const item = document.createElement("div");
+			item.classList.add("grid-stack-item");
+			item.dataset.id = data.id;
 
-	item.innerHTML = `
+			item.innerHTML = `
         <div class="grid-stack-item-content">
-            <form method="post" class="box-form">
-                <input type="hidden" name="action" value="update">
-                <input type="hidden" name="id" value="${boxData.id}">
-                <input type="hidden" name="title">
-                <input type="hidden" name="content">
-                <div class="title-content" contenteditable="true" data-field="title">
-                    ${boxData.title}
-                </div>
-                <div class="box-content" contenteditable="true" data-field="content">
-                    ${boxData.content}
-                </div>
-                <button type="submit">Save</button>
-            </form>
+            <div class="title-content" contenteditable="true">New Box</div>
+            <div class="box-content" contenteditable="true">Content</div>
         </div>
-    `;
-
-	window.grid.addWidget(item, {
-		width: 1,
-		height: 1,
-		x: 0,
-		y: 0,
-	});
+        `;
+			window.grid.makeWidget(item, { w: 1, h: 1 });
+		});
 }
 
 function removeBox(itemEl) {

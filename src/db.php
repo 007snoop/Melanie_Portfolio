@@ -1,11 +1,3 @@
-<!-- 
- 
-PDO connection
- 
-add GetDB() function 
-
--->
-
 <?php 
 
 $dotenvPath = __DIR__ . '/../.env';

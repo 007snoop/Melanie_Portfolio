@@ -119,6 +119,9 @@ $boxes = $boxRepo->getBoxes(false);
             renderBox($box, true);
         endforeach; ?>
     </div>
-<script src=" https://cdn.jsdelivr.net/npm/gridstack@12.4.2/dist/gridstack-all.min.js "></script>
+    <script>
+        window.IS_ADMIN = true;
+    </script>
+    <script src=" https://cdn.jsdelivr.net/npm/gridstack@12.4.2/dist/gridstack-all.min.js "></script>
     <script src="script.js"></script>
 </body>

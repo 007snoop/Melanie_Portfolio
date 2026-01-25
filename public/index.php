@@ -29,6 +29,7 @@ $links = $linkRepo->getVisibleLinks();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Melanie Adams Portfolio</title>
     <link rel="stylesheet" href="styles.css">
+    <link href=" https://cdn.jsdelivr.net/npm/gridstack@12.4.2/dist/gridstack.min.css " rel="stylesheet">
 </head>
 
 <body data-page="public">
@@ -52,13 +53,15 @@ $links = $linkRepo->getVisibleLinks();
             <?php endforeach; ?>
         </ul>
     </div>
-    <div class="bento-container">
-
-        <div class="grid-overlay" hidden></div>
-        <?php foreach ($boxes as $box): ?>
-            <?php renderBox($box, false) ?>
-        <?php endforeach; ?>
+    <div class="grid-stack">
+        <?php foreach ($boxes as $box):
+            renderBox($box, false);
+        endforeach; ?>
     </div>
+     <script>
+        window.IS_ADMIN = false;
+    </script>
+    <script src=" https://cdn.jsdelivr.net/npm/gridstack@12.4.2/dist/gridstack-all.min.js "></script>
     <script src="script.js"></script>
 </body>
 

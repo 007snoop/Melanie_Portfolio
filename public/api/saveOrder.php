@@ -9,15 +9,22 @@ if (!isset($_SESSION['admin'])) {
     exit;
 }
 
-if (!is_array($data)) {
+if (!isset($data['order']) || !is_array($data['order'])) {
     http_response_code(400);
+    echo json_encode(['error' => 'Invalid payload']);
     exit;
 }
 
-foreach ($data as $item) {
+foreach ($data['order'] as $item) {
+    if (!isset($item['id'], $item['x'], $item['y'], $item['w'], $item['h'])) {
+        continue;
+    }
+
     $repo->updatePosition(
         (int)$item['id'],
-        (int)$item['position']
-
+        (int)$item['x'],
+        (int)$item['y'],
+        (int)$item['w'],
+        (int)$item['h']
     );
 }

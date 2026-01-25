@@ -2,9 +2,14 @@
 function renderBox(array $box, bool $editable = false)
 {
     $current = $box['size'] ?? '1x1';
-    [$w, $h] = explode('x', $current);
+
     ?>
-    <div class="grid-stack-item" data-id="<?= $box['id'] ?>" gs-x="0" gs-y="0" gs-w="<?= $w ?>" gs-h="<?= $h ?>">
+    <div class="grid-stack-item" 
+    data-id="<?= $box['id'] ?>" 
+    gs-x="<?= (int)($box['grid_x'] ?? 0) ?>" 
+    gs-y="<?= (int)($box['grid_y'] ?? 0)?>" 
+    gs-w="<?= (int)($box['grid_w'] ?? 1) ?>" 
+    gs-h="<?= (int)($box['grid_h'] ?? 1) ?>">
         <div class="grid-stack-item-content <?= !$box['on_off'] ? 'disabled' : '' ?>">
 
             <?php if ($editable): ?>
