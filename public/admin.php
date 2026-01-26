@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     // add box
     if ($_POST['action'] === 'add') {
-        $boxRepo->addBox(
+        $boxRepo->addTextBox(
             $_POST['title'],
             $_POST['content'],
             (int) $_POST['position']
@@ -71,9 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             (int) $_POST['id'],
             $_POST['title'],
             $_POST['content'],
-            (int) $_POST['position'],
-            isset($_POST['on_off']) ? 1 : 0,
-            $_POST['size']
+            isset($_POST['on_off']) ? 1 : 0
         );
         header('Location: admin.php');
         exit;

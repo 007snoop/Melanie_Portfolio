@@ -19,11 +19,10 @@ if (!isset($data['title'], $data['content'])) {
 
 $repo = new BoxRepository();
 
-$id = $repo->addBox(
+$id = $repo->addTextBox(
     $data['title'],
-    $data['content'],
-    0,
-    '1x1'
+    $data['content'] ?? '',
+    $data['type'] ?? 'text'
 );
 
 echo json_encode(['id' => $id]);

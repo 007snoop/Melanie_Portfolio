@@ -71,12 +71,10 @@ function autoResizeEditable(el) {
 function updateBox(b) {
 	const payload = {
 		action: "update",
-		id: box.dataset.id,
-		title: box.querySelector('[data-field="title"]')?.innerText || "",
-		content: box.querySelector('[data-field="content"]')?.innerText || "",
-		position: [...container.children].indexOf(box),
-		on_off: !box.classList.contains("disabled"),
-		size: box.dataset.size,
+		id: b.dataset.id,
+		title: b.querySelector('[data-field="title"]')?.innerText || "",
+		content: b.querySelector('[data-field="content"]')?.innerText || "",
+		on_off: !b.classList.contains("disabled"),
 	};
 
 	fetch("admin.php", {
@@ -130,21 +128,36 @@ function addBox() {
             </div>
         `;
 			window.grid.makeWidget(item, { w: 1, h: 1 });
+            const node = item.gridstackNode;
 
-            const form = item.querySelector('.box-form');
-
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                form.querySelectorAll('[contenteditable]').forEach((el) => {
-                    const field = el.dataset.field;
-                    const hidden = form.querySelector(`input[name="${field}"]`);
-
-                    if (hidden) {
-                        hidden.value = el.innerText.trim();
-                    }
-                });
-                updateBox(item);
+            fetch('/api/saveOrder.php', {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    order: [{
+                        id: item.dataset.id,
+                        x: node.x,
+                        y: node.y,
+                        w: node.w,
+                        h: node.h
+                    }]
+                })
             });
+
+			const form = item.querySelector(".box-form");
+
+			form.addEventListener("submit", (e) => {
+				e.preventDefault();
+				form.querySelectorAll("[contenteditable]").forEach((el) => {
+					const field = el.dataset.field;
+					const hidden = form.querySelector(`input[name="${field}"]`);
+
+					if (hidden) {
+						hidden.value = el.innerText.trim();
+					}
+				});
+				updateBox(item);
+			});
 		});
 }
 

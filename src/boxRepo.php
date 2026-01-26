@@ -25,45 +25,60 @@ class BoxRepository
         return $stmt->fetchAll();
     }
 
-    public function addBox(string $title, string $content, int $position = 0, string $size = '1x1'): int
+    public function addTextBox(string $title, string $content, string $type = 'text'): int
     {
         $db = getDb();
 
         $stmt = $db->prepare(
-            'INSERT INTO boxes (title, content, position, on_off, size) VALUES (:title, :content, :position, :on_off, :size)'
+            'INSERT INTO boxes (
+            title, 
+            content, 
+            on_off,
+            type, 
+            grid_x, 
+            grid_y, 
+            grid_w, 
+            grid_h)
+            VALUES (
+            :title, 
+            :content, 
+            :on_off, 
+            :type, 
+            0, 0, 1, 1)'
         );
         $stmt->execute([
             ':title' => $title,
             ':content' => $content,
-            ':position' => $position,
-            ':on_off' => 1,
-            ':size' => $size
+            ':type' => $type,
+            ':on_off' => 1
         ]);
 
         return (int) $db->lastInsertId();
     }
 
-    public function updateBox(int $id, string $title, string $content, int $position, bool $on_off, string $size)
+    public function updateBox(int $id, string $title, string $content, bool $on_off)
     {
         $db = getDb();
 
         $stmt = $db->prepare(
             'UPDATE boxes
-             SET title = :title, content = :content, position = :position, on_off = :on_off, size = :size
+             SET 
+             title = :title, 
+             content = :content, 
+             on_off = :on_off
              WHERE id = :id'
         );
 
         $stmt->execute([
             ':title' => $title,
             ':content' => $content,
-            ':position' => $position,
             ':on_off' => $on_off ? 1 : 0,
-            ':size' => $size,
             ':id' => $id
         ]);
     }
 
-    public function updatePosition(int $id, int $x, int $y, int $w, int $h) {
+    public function updatePosition(int $id, int $x, int $y, int $w, int $h)
+    {
         $db = getDB();
 
         $stmt = $db->prepare(

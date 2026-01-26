@@ -34,14 +34,20 @@ CREATE TABLE IF NOT EXISTS admin (
     password_hash VARCHAR(255) NOT NULL
 );
 
-/* add box editing */
+/* add box editing 
 
-ALTER TABLE boxes 
-ADD COLUMN size VARCHAR(5) NOT NULL DEFAULT '1x1';
+SQL to be updated with standardized queries before deployment 
 
+*/
 
 ALTER TABLE boxes
 ADD COLUMN grid_x INT NOT NULL DEFAULT 1,
 ADD COLUMN grid_y INT NOT NULL DEFAULT 1,
 ADD COLUMN grid_w INT NOT NULL DEFAULT 1,
 ADD COLUMN grid_h INT NOT NULL DEFAULT 1;
+
+ALTER TABLE boxes
+ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'text',
+ADD COLUMN url TEXT NULL,
+ADD COLUMN image_url TEXT NULL,
+ADD COLUMN caption TEXT NULL;
