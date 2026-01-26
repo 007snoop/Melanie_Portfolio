@@ -38,6 +38,7 @@ body {
     flex-direction: column;
     justify-content: center;
     transition: all 0.2s ease;
+    overflow: auto;
 }
 
 .grid-stack-item-content.disabled {

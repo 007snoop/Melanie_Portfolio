@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     // add box
     if ($_POST['action'] === 'add') {
-        $boxRepo->addBox(
+        $boxRepo->addTextBox(
             $_POST['title'],
             $_POST['content'],
             (int) $_POST['position']
