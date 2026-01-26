@@ -56,22 +56,23 @@ class BoxRepository
         return (int) $db->lastInsertId();
     }
 
-    public function updateBox(int $id, string $title, string $content, int $position, bool $on_off, string $size)
+    public function updateBox(int $id, string $title, string $content, bool $on_off)
     {
         $db = getDb();
 
         $stmt = $db->prepare(
             'UPDATE boxes
-             SET title = :title, content = :content, position = :position, on_off = :on_off, size = :size
+             SET 
+             title = :title, 
+             content = :content, 
+             on_off = :on_off
              WHERE id = :id'
         );
 
         $stmt->execute([
             ':title' => $title,
             ':content' => $content,
-            ':position' => $position,
             ':on_off' => $on_off ? 1 : 0,
-            ':size' => $size,
             ':id' => $id
         ]);
     }
