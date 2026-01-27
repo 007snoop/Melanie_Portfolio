@@ -52,12 +52,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const btn = e.target.closest('.box-remove');
-        const item = btn.closest('.grid-stack-item');
-        const id = item.dataset.id;
-
-        if (!btn || !item || !id) {
-            return
+        if (!btn) {
+            return;
         }
+        const item = btn.closest('.grid-stack-item');
+        if (!item) {
+            return;
+        }
+        const id = item.dataset.id;
+        if (!id) {
+            return;
+        }
+
+       
 
         fetch("/api/deleteBox.php", {
             method: 'POST',
@@ -76,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* Functions */
-function saveOrder(items) {
+function saveOrder(event, items) {
 	const order = items.map((i) => ({
 		id: i.el.dataset.id,
 		x: i.x,
