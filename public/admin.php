@@ -45,6 +45,9 @@ if (!isset($_SESSION['admin'])): ?>
     exit;
 endif;
 
+/* ----- CONFIRM ADMIN ----- */
+$isAdmin = isset($_SESSION['admin']) && $_SESSION['admin'] === true;
+
 /* ----- BOX HANDLER ----- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $boxRepo = new BoxRepository();
@@ -54,7 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $boxRepo->addTextBox(
             $_POST['title'],
             $_POST['content'],
-            (int) $_POST['position']
         );
         header('Location: admin.php');
         exit;
@@ -88,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
 /* <!-- Edit Boxes --> */
 $boxRepo = new BoxRepository();
-$boxes = $boxRepo->getBoxes(false);
+$boxes = $boxRepo->getLayoutBoxes(false);
 
 ?>
 
@@ -107,15 +109,21 @@ $boxes = $boxRepo->getBoxes(false);
 <body data-page="admin">
     <h1>Manage Boxes</h1>
 
-    <?php renderAddBoxForm(); ?>
+    <?php renderAddTextBoxForm(); ?>
 
     <br>
 
 
     <div class="grid-stack admin-mode">
-        <?php foreach ($boxes as $box):
-            renderBox($box, true);
-        endforeach; ?>
+        <?php foreach ($boxes as $box) {
+            switch ($box['type']) {
+                case 'text':
+                    $content = $boxRepo->getTextBox($box['id']);
+                    renderTextBox($box, $content, $isAdmin);
+                    break;
+            }
+        }
+        ?>
     </div>
     <script>
         window.IS_ADMIN = true;

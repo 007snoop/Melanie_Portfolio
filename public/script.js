@@ -45,10 +45,38 @@ document.addEventListener("DOMContentLoaded", () => {
 			addBox();
 		});
 	}
+
+    document.addEventListener('click', (e) => {
+        if (!window.IS_ADMIN) {
+            return;
+        }
+
+        const btn = e.target.closest('.box-remove');
+        const item = btn.closest('.grid-stack-item');
+        const id = item.dataset.id;
+
+        if (!btn || !item || !id) {
+            return
+        }
+
+        fetch("/api/deleteBox.php", {
+            method: 'POST',
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ id })
+        }).then((res) => {
+            if (!res.ok) {
+                throw new Error('Delete failed');
+            }
+            window.grid.removeWidget(item);
+        }).catch(err => {
+            console.error(err);
+            alert('failed to delete box');
+        });
+    });
 });
 
 /* Functions */
-function saveOrder(event, items) {
+function saveOrder(items) {
 	const order = items.map((i) => ({
 		id: i.el.dataset.id,
 		x: i.x,
@@ -95,70 +123,55 @@ function addBox() {
 			content: "Content",
 		}),
 	})
+        
 		.then((res) => res.json())
 		.then((data) => {
-			const item = document.createElement("div");
-			item.classList.add("grid-stack-item");
-			item.dataset.id = data.id;
+			if (!data || !data.html) {
+                console.error('invalid addBox response', data);
+                return;
+            }
+            const gridEl = document.querySelector('.grid-stack');
 
-			item.innerHTML = `
-       <div class="grid-stack-item-content">
-                <form class="box-form">
-                    <input type="hidden" name="action" value="update">
-                    <input type="hidden" name="id" value="${data.id}">
-                    <input type="hidden" name="title">
-                    <input type="hidden" name="content">
-                    <input type="hidden" name="size" value="1x1">
-                    
-                    <div class="title-content" contenteditable="true" data-field="title">New Box</div>
-                    <div class="box-content" contenteditable="true" data-field="content">Content</div>
-                    
-                    <label>
-                        Enabled
-                        <input type="checkbox" name="on_off" checked>
-                    </label>
-                    
-                    <button type="submit">Save</button>
-                </form>
-                <form method="post" style="display:inline;">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="id" value="${data.id}">
-                    <button type="submit" onclick="return confirm('Delete this box?')">Delete</button>
-                </form>
-            </div>
-        `;
-			window.grid.makeWidget(item, { w: 1, h: 1 });
+            // returned html 
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = data.html.trim();
+
+            const item = wrapper.firstElementChild;
+            if (!item) {
+                console.error('no grid item found in html');
+                return;
+            }
+
+            // insert into grid
+            gridEl.appendChild(item);
+
+            //add to gridstack
+            window.grid.makeWidget(item);
+
+            // node 
             const node = item.gridstackNode;
+            if (!node) {
+                console.error('gridstack node not attached');
+                return;
+            }
 
-            fetch('/api/saveOrder.php', {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    order: [{
-                        id: item.dataset.id,
-                        x: node.x,
-                        y: node.y,
-                        w: node.w,
-                        h: node.h
-                    }]
-                })
-            });
+            // form submission 
+            const form = item.querySelector('.box-form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault;
 
-			const form = item.querySelector(".box-form");
-
-			form.addEventListener("submit", (e) => {
-				e.preventDefault();
-				form.querySelectorAll("[contenteditable]").forEach((el) => {
-					const field = el.dataset.field;
-					const hidden = form.querySelector(`input[name="${field}"]`);
-
-					if (hidden) {
-						hidden.value = el.innerText.trim();
-					}
-				});
-				updateBox(item);
-			});
-		});
+                    form.querySelectorAll("[contenteditable]").forEach((el) => {
+                        const field = el.dataset.field;
+                        const hidden = form.querySelector(`input[name="${field}"]`);
+                        if (hidden) {
+                            hidden.value = el.innerText.trim();
+                        }
+                    });
+                    updateBox(item);
+                });
+            }
+        });
 }
 
 function removeBox(itemEl) {

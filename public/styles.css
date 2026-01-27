@@ -29,6 +29,7 @@ body {
 }
 
 .grid-stack-item-content {
+    position: relative;
     background: #fafafa;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -45,8 +46,22 @@ body {
     opacity: 0.5;
 }
 
-/* Sizes */
-.size-1x1 { grid-column: span 1; grid-row: span 1; }
-.size-2x1 { grid-column: span 2; grid-row: span 1; }
-.size-1x2 { grid-column: span 1; grid-row: span 2; }
-.size-2x2 { grid-column: span 2; grid-row: span 2; }
+.box-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.grid-stack-item:hover .box-remove {
+    opacity: 1;
+}
