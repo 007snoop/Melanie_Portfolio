@@ -3,19 +3,48 @@ require_once __DIR__ . '/db.php';
 
 class BoxRepository
 {
+
+    public function getLayoutBoxes(bool $onlyEnabled = true): array
+    {
+        $db = getDB();
+
+        $sql = "SELECT * FROM boxes";
+
+        if ($onlyEnabled) {
+            $sql .= " WHERE on_off = 1";
+        }
+
+        $sql .= " ORDER BY grid_y, grid_x";
+
+        return $db->query($sql)->fetchAll();
+    }
+
+    public function getTextBox(int $boxId): array
+    {
+        $db = getDB();
+
+        $stmt = $db->prepare(
+            "SELECT * FROM text_boxes
+            WHERE box_id = :id"
+        );
+
+        $stmt->execute([':id' => $boxId]);
+
+        return $stmt->fetch() ?: [];
+    }
     public function getBoxes(bool $onlyEnabled = true): array
     {
         $db = getDb();
         if ($onlyEnabled) {
             $stmt = $db->prepare(
-                'SELECT id, title, content, on_off, grid_x, grid_y, grid_w, grid_h
+                'SELECT id, on_off, grid_x, grid_y, grid_w, grid_h
              FROM boxes
              WHERE on_off = 1
              ORDER BY grid_y, grid_x'
             );
         } else {
             $stmt = $db->prepare(
-                'SELECT id, title, content, on_off, grid_x, grid_y, grid_w, grid_h
+                'SELECT id, on_off, grid_x, grid_y, grid_w, grid_h
              FROM boxes
              ORDER BY grid_y, grid_x'
             );
@@ -25,35 +54,55 @@ class BoxRepository
         return $stmt->fetchAll();
     }
 
-    public function addTextBox(string $title, string $content, string $type = 'text'): int
+    public function addTextBox(string $title, string $content, string $type): int
     {
         $db = getDb();
-
-        $stmt = $db->prepare(
-            'INSERT INTO boxes (
-            title, 
-            content, 
+        $db->beginTransaction();
+        try {
+            $stmt = $db->prepare(
+                'INSERT INTO boxes (
             on_off,
             type, 
             grid_x, 
             grid_y, 
             grid_w, 
             grid_h)
-            VALUES (
-            :title, 
-            :content, 
+            VALUES ( 
             :on_off, 
             :type, 
             0, 0, 1, 1)'
-        );
-        $stmt->execute([
-            ':title' => $title,
-            ':content' => $content,
-            ':type' => $type,
-            ':on_off' => 1
-        ]);
+            );
 
-        return (int) $db->lastInsertId();
+            $stmt->execute([
+                ':type' => $type,
+                ':on_off' => 1
+            ]);
+
+            $boxId = (int) $db->lastInsertId();
+
+            $stmt = $db->prepare(
+                'INSERT INTO text_boxes (
+                box_id,
+                title,
+                content)
+                VALUES (
+                :box_id,
+                :title,
+                :content)'
+            );
+
+            $stmt->execute([
+                ':box_id' => $boxId,
+                ':title' => $title,
+                ':content' => $content,
+            ]);
+
+            $db->commit();
+            return $boxId;
+        } catch (Throwable $e) {
+            $db->rollBack();
+            throw $e;
+        }
     }
 
     public function updateBox(int $id, string $title, string $content, bool $on_off)

@@ -54,9 +54,14 @@ $links = $linkRepo->getVisibleLinks();
         </ul>
     </div>
     <div class="grid-stack">
-        <?php foreach ($boxes as $box):
-            renderBox($box, false);
-        endforeach; ?>
+     <?php foreach ($boxes as $box) {
+            switch ($box['type']) {
+                case 'text':
+                    $content = $repo->getTextBox($box['id']);
+                    renderTextBox($box, $content, $isAdmin);
+                    break;
+            }
+        } ?>
     </div>
      <script>
         window.IS_ADMIN = false;

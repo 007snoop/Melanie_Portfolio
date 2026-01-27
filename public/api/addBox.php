@@ -2,6 +2,7 @@
 
 session_start();
 require_once __DIR__ . '/../../src/boxRepo.php';
+require_once __DIR__ . '/../../src/boxView.php';
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['admin'])) {
@@ -25,4 +26,12 @@ $id = $repo->addTextBox(
     $data['type'] ?? 'text'
 );
 
-echo json_encode(['id' => $id]);
+$layout = $repo->getLayoutBoxes(false);
+$box = array_values(array_filter($layout, fn($b) => $b['id'] == $id))[0];
+$content = $repo->getTextBox($id);
+
+ob_start();
+renderTextBox($box, $content, true);
+$html = ob_get_clean();
+
+echo json_encode(['id' => $id, 'html' => $html]);

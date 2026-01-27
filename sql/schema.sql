@@ -51,3 +51,25 @@ ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'text',
 ADD COLUMN url TEXT NULL,
 ADD COLUMN image_url TEXT NULL,
 ADD COLUMN caption TEXT NULL;
+
+ALTER TABLE boxes
+MODIFY title VARCHAR(255) NULL,
+MODIFY content TEXT NULL;
+
+CREATE TABLE boxes (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     type VARCHAR(20) NOT NULL,
+    ->     on_off TINYINT(1) NOT NULL DEFAULT 1,
+    ->     grid_x INT NOT NULL DEFAULT 0,
+    ->     grid_y INT NOT NULL DEFAULT 0,
+    ->     grid_w INT NOT NULL DEFAULT 1,
+    ->     grid_h INT NOT NULL DEFAULT 1,
+    ->     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ->     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    -> );
+
+create table text_boxes (
+    -> box_id int PRIMARY KEY,
+    -> title varchar(255) not null,
+    -> content text not null,
+    -> foreign key (box_id) references boxes(id) on delete cascade);
