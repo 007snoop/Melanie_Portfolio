@@ -93,6 +93,11 @@ function renderLinkBox(array $layout, array $content, bool $editable)
     $title = htmlspecialchars($content['title'] ?? 'Link');
     $url   = htmlspecialchars($content['url'] ?? '#');
 
+    // Preview card URL rendering
+    $parsed = parse_url($url);
+    $domain = $parsed['host'] ?? '';
+    $favion = $domain ? "https://www.google.com/s2/favicons?domain={$domain}&sz=64" : '';
+
     // ensure GridStack coordinates are always integers
     $x = (int) ($layout['grid_x'] ?? 0);
     $y = (int) ($layout['grid_y'] ?? 0);
@@ -114,7 +119,20 @@ function renderLinkBox(array $layout, array $content, bool $editable)
                     <button type="submit">Save</button>
                 </form>
             <?php else: ?>
-                <a href="<?= $url ?>" target="_blank" rel="noopener noreferrer"><?= $title ?></a>
+                <a class="link-card" href="<?= $url ?>" target="_blank" rel="noopener noreferrer">
+                    <div class="link-favicon">
+                        <img src="<?= $favion ?>" alt="">
+                    </div>
+
+                    <div class="link-meta">
+                        <div class="link-title">
+                            <?= $title ?>
+                        </div>
+                        <div class="link-domain">
+                            <?= htmlspecialchars($domain) ?>
+                        </div>
+                    </div>
+                </a>
             <?php endif; ?>
         </div>
     </div>
