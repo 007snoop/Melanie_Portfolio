@@ -17,7 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	window.grid = grid;
 
 	document.querySelectorAll(".box-form").forEach((form) => {
-		form.addEventListener("submit", () => {
+		form.addEventListener("submit", (e) => {
+            e.preventDefault();
 			form.querySelectorAll("[contenteditable]").forEach((el) => {
 				const field = el.dataset.field;
 				const hidden = form.querySelector(`input[name="${field}"]`);
@@ -40,10 +41,28 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	if (window.IS_ADMIN === true) {
-		const addBtn = document.getElementById("show-add-box");
-		addBtn.addEventListener("click", () => {
-			addBox();
-		});
+		const addTextBtn = document.getElementById("add-text-box");
+        const addLinkbtn = document.getElementById("add-link-box");
+
+        if (addTextBtn) {
+            addTextBtn.addEventListener("click", () => {
+                addBox({
+                    type: 'text',
+                    title: 'New Text Box',
+                    content: 'Text Content'
+                });
+            });
+        }
+
+        if (addLinkbtn) {
+            addLinkbtn.addEventListener('click', () =>{
+                addBox({
+                    type: 'link',
+                    title: 'New Link Box',
+                    url: "https://example.com"
+                });
+            });
+        }
 	}
 
     document.addEventListener('click', (e) => {
@@ -121,14 +140,11 @@ function updateBox(b) {
 	});
 }
 
-function addBox() {
+function addBox(payload) {
 	fetch("/api/addBox.php", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({
-			title: "New Box",
-			content: "Content",
-		}),
+		body: JSON.stringify(payload),
 	})
         
 		.then((res) => res.json())

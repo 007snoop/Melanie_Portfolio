@@ -52,7 +52,7 @@ $isAdmin = isset($_SESSION['admin']) && $_SESSION['admin'] === true;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $boxRepo = new BoxRepository();
 
-    // add box
+    // add text box
     if ($_POST['action'] === 'add') {
         $boxRepo->addTextBox(
             $_POST['title'],
@@ -109,7 +109,7 @@ $boxes = $boxRepo->getLayoutBoxes(false);
 <body data-page="admin">
     <h1>Manage Boxes</h1>
 
-    <?php renderAddTextBoxForm(); ?>
+    <?php renderAddBoxButtons(); ?>
 
     <br>
 
@@ -120,6 +120,10 @@ $boxes = $boxRepo->getLayoutBoxes(false);
                 case 'text':
                     $content = $boxRepo->getTextBox($box['id']);
                     renderTextBox($box, $content, $isAdmin);
+                    break;
+                case 'link':
+                    $content = $boxRepo->getLinkBox($box['id']);
+                    renderLinkBox($box, $content, true);
                     break;
             }
         }

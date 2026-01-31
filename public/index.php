@@ -54,18 +54,24 @@ $links = $linkRepo->getVisibleLinks();
         </ul>
     </div>
     <div class="grid-stack">
-     <?php foreach ($boxes as $box) {
-            switch ($box['type']) {
+     <?php 
+     $isAdmin = false;
+     foreach ($boxes as $box) {
+        $type = $box['type'] ?? null;
+            switch ($type) {
                 case 'text':
-                    $content = $repo->getTextBox($box['id']);
+                    $content = $boxRepo->getTextBox($box['id']);
                     renderTextBox($box, $content, $isAdmin);
+                    break;
+                case 'link':
+                    $content = $boxRepo->getLinkBox($box['id']);
+                    renderLinkBox($box, $content, $isAdmin);
+                    break;
+                default:
                     break;
             }
         } ?>
     </div>
-     <script>
-        window.IS_ADMIN = false;
-    </script>
     <script src=" https://cdn.jsdelivr.net/npm/gridstack@12.4.2/dist/gridstack-all.min.js "></script>
     <script src="script.js"></script>
 </body>

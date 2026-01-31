@@ -59,19 +59,12 @@ function renderTextBox(array $layout, array $content, bool $editable)
     <div class="grid-stack-item" data-id="<?= (int) $layout['id'] ?>" gs-x="<?= (int) $layout['grid_x'] ?>"
         gs-y="<?= (int) $layout['grid_y'] ?>" gs-w="<?= (int) $layout['grid_w'] ?>" gs-h="<?= (int) $layout['grid_h'] ?>">
         <div class="grid-stack-item-content">
-            <button
-                type="button"    
-                class="box-remove"
-                title="Delete box"
-            >&#10006;</button>
             <?php if ($editable): ?>
+                <button type="button" class="box-remove" title="Delete box">&#10006;</button>
                 <form method='post' class="box-form">
                     <input type="hidden" name="id" value="<?= (int) $layout['id'] ?>">
                     <input type="hidden" name="type" value="text">
-
-                    <div class="title-content" contenteditable="true" data-field="title">
-                        <?= htmlspecialchars($content['title']) ?? '' ?>
-                    </div>
+                    <input type="hidden" name="title" value="<?= htmlspecialchars($content['title']) ?? '' ?>">
 
                     <div class="box-content" contenteditable="true" data-field="content">
                         <?= htmlspecialchars($content['content']) ?? '' ?>
@@ -81,7 +74,7 @@ function renderTextBox(array $layout, array $content, bool $editable)
                 </form>
 
             <?php else: ?>
-                <h3><?= htmlspecialchars($content['title']) ?? '' ?></h3>
+                
                 <div class="box-content">
                     <?= nl2br(htmlspecialchars($content['content']) ?? '') ?>
                 </div>
@@ -94,11 +87,48 @@ function renderTextBox(array $layout, array $content, bool $editable)
 ?>
 
 <?php
-function renderAddTextBoxForm(): void
+function renderLinkBox(array $layout, array $content, bool $editable)
+{
+    $id = (int) $layout['id'];
+    $title = htmlspecialchars($content['title'] ?? 'Link');
+    $url   = htmlspecialchars($content['url'] ?? '#');
+
+    // ensure GridStack coordinates are always integers
+    $x = (int) ($layout['grid_x'] ?? 0);
+    $y = (int) ($layout['grid_y'] ?? 0);
+    $w = (int) ($layout['grid_w'] ?? 1);
+    $h = (int) ($layout['grid_h'] ?? 1);
+    ?>
+    <div class="grid-stack-item" data-id="<?= $id ?>" gs-x="<?= $x ?>" gs-y="<?= $y ?>" gs-w="<?= $w ?>" gs-h="<?= $h ?>">
+        <div class="grid-stack-item-content <?= !$editable && empty($title) ? 'empty' : '' ?>">
+            <?php if ($editable): ?>
+                <button type="button" class="box-remove" title="Delete box">&#10006;</button>
+                <form class="box-form">
+                    <input type="hidden" name="id" value="<?= $id ?>">
+                    <input type="hidden" name="type" value="link">
+                    <input type="hidden" name="title">
+                    <input type="hidden" name="url">
+
+                    <div contenteditable="true" class="title-content" data-field="title"><?= $title ?></div>
+                    <div contenteditable="true" class="box-content" data-field="url"><?= $url ?></div>
+                    <button type="submit">Save</button>
+                </form>
+            <?php else: ?>
+                <a href="<?= $url ?>" target="_blank" rel="noopener noreferrer"><?= $title ?></a>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php
+}
+?>
+
+<?php
+function renderAddBoxButtons(): void
 {
     ?>
     <div class="add-box-container">
-        <button id="show-add-box">+ Add New Text Box</button>
+        <button id="add-text-box">+ Add Text Box</button>
+        <button id="add-link-box">+ Add Link Box</button>
     </div>
     <?php
 }

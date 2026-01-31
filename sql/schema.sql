@@ -73,3 +73,10 @@ create table text_boxes (
     -> title varchar(255) not null,
     -> content text not null,
     -> foreign key (box_id) references boxes(id) on delete cascade);
+
+
+create table link_boxes (
+    box_id int PRIMARY KEY,
+    title varchar(255) null,
+    url text not null,
+    foreign key (box_id) references boxes(id) on delete cascade);

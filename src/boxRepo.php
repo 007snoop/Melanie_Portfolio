@@ -32,19 +32,85 @@ class BoxRepository
 
         return $stmt->fetch() ?: [];
     }
+
+    public function addLinkBox(string $title, string $url): int
+    {
+        $db = getDB();
+        $db->beginTransaction();
+
+        try {
+            $stmt = $db->prepare(
+                "INSERT INTO boxes (
+                on_off,
+                type,
+                grid_x,
+                grid_y,
+                grid_w,
+                grid_h)
+                VALUES (
+                :on_off,
+                :type,
+                0, 0, 1, 1)"
+            );
+
+            $stmt->execute([
+                ':type' => 'link',
+                ':on_off' => 1
+            ]);
+
+            $boxId = (int)$db->lastInsertId();
+
+            $stmt = $db->prepare(
+                "INSERT INTO link_boxes (
+                box_id,
+                title,
+                url) 
+                VALUES (
+                :box_id,
+                :title,
+                :url)"
+            );
+
+            $stmt->execute([
+                ':box_id' => $boxId,
+                ':title' => $title,
+                ':url' => $url
+            ]);
+
+            $db->commit();
+            return $boxId;
+        } catch (Throwable $e) {
+            $db->rollBack();
+            throw $e;
+        }
+    }
+
+    public function getLinkBox(int $boxId): array
+    {
+        $db = getDB();
+
+        $stmt = $db->prepare(
+            "SELECT * FROM link_boxes
+            WHERE box_id = :id"
+        );
+
+        $stmt->execute([':id'=> $boxId]);
+
+        return $stmt->fetch() ?: [];
+    }
     public function getBoxes(bool $onlyEnabled = true): array
     {
         $db = getDb();
         if ($onlyEnabled) {
             $stmt = $db->prepare(
-                'SELECT id, on_off, grid_x, grid_y, grid_w, grid_h
+                'SELECT id, type, on_off, grid_x, grid_y, grid_w, grid_h
              FROM boxes
              WHERE on_off = 1
              ORDER BY grid_y, grid_x'
             );
         } else {
             $stmt = $db->prepare(
-                'SELECT id, on_off, grid_x, grid_y, grid_w, grid_h
+                'SELECT id, type, on_off, grid_x, grid_y, grid_w, grid_h
              FROM boxes
              ORDER BY grid_y, grid_x'
             );
@@ -54,7 +120,7 @@ class BoxRepository
         return $stmt->fetchAll();
     }
 
-    public function addTextBox(string $title, string $content, string $type): int
+    public function addTextBox(string $title, string $content): int
     {
         $db = getDb();
         $db->beginTransaction();
@@ -74,7 +140,7 @@ class BoxRepository
             );
 
             $stmt->execute([
-                ':type' => $type,
+                ':type' => 'text',
                 ':on_off' => 1
             ]);
 
