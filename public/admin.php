@@ -27,8 +27,8 @@ require_once __DIR__ . '/../src/boxView.php';
 
 
 /* ----- LOGIN HANDLER ----- */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
-    if ($_POST['password'] === $env['ADMIN_PASSWORD']) { #change password later
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($data['password'])) {
+    if ($data['password'] === $env['ADMIN_PASSWORD']) { #change password later
         $_SESSION['admin'] = true;
 
         header('Location: admin.php');
@@ -49,39 +49,45 @@ endif;
 $isAdmin = isset($_SESSION['admin']) && $_SESSION['admin'] === true;
 
 /* ----- BOX HANDLER ----- */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($data['action'])) {
     $boxRepo = new BoxRepository();
 
     // add text box
-    if ($_POST['action'] === 'add') {
+    if ($data['action'] === 'add') {
         $boxRepo->addTextBox(
-            $_POST['title'],
-            $_POST['content'],
+            $data['title'],
+            $data['content'],
         );
         header('Location: admin.php');
         exit;
     }
 
     // update box 
-    if ($_POST['action'] === 'update') {
-        if (trim($_POST['title']) === '' || trim($_POST['content']) === '') {
-            header('Location: admin.php');
-            exit;
+    if ($data['action'] === 'update') {
+        if ($data['type'] === 'text') {
+            # code...
+            $boxRepo->updateTextBox(
+                (int)$data['id'],
+                $data['title'],
+                $data['content']
+            );
         }
 
-        $boxRepo->updateBox(
-            (int) $_POST['id'],
-            $_POST['title'],
-            $_POST['content'],
-            isset($_POST['on_off']) ? 1 : 0
-        );
-        header('Location: admin.php');
+        if ($data['type'] === 'link') {
+            # code...
+            $boxRepo->updateLinkBox(
+                (int)$data['id'],
+                $data['title'],
+                $data['url']
+            );
+        }
+
         exit;
     }
 
     // delete box
-    if ($_POST['action'] === 'delete') {
-        $boxRepo->deleteBox((int) $_POST['id']);
+    if ($data['action'] === 'delete') {
+        $boxRepo->deleteBox((int) $data['id']);
         header('Location: admin.php');
         exit;
     }
