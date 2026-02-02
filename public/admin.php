@@ -55,8 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($data['action'])) {
     // add text box
     if ($data['action'] === 'add') {
         $boxRepo->addTextBox(
-            $data['title'],
-            $data['content'],
+            $data['title'] ?? '',
+            $data['content'] ?? '',
         );
         header('Location: admin.php');
         exit;
@@ -68,8 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($data['action'])) {
             # code...
             $boxRepo->updateTextBox(
                 (int)$data['id'],
-                $data['title'],
-                $data['content']
+                $data['title'] ?? '',
+                $data['content'] ?? ''
             );
         }
 
@@ -77,8 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($data['action'])) {
             # code...
             $boxRepo->updateLinkBox(
                 (int)$data['id'],
-                $data['title'],
-                $data['url']
+                $data['title'] ?? '',
+                $data['url'] ?? ''
             );
         }
 

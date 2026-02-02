@@ -129,13 +129,25 @@ function autoResizeEditable(el) {
 	el.style.height = el.scrollHeight + "px";
 }
 function updateBox(b) {
+    const form = b.querySelector('.box-form');
+    const type = form.querySelector('input[name="type"]')?.value;
+
 	const payload = {
 		action: "update",
 		id: b.dataset.id,
-		title: b.querySelector('[data-field="title"]')?.innerText || "",
-		content: b.querySelector('[data-field="content"]')?.innerText || "",
+        type: type,
 		on_off: !b.classList.contains("disabled"),
 	};
+
+    if (type === 'text') {
+        payload.title = b.querySelector('[data-field="title"]')?.innerText || 'text-box';
+        payload.content = b.querySelector('[data-field="content"]')?.innerText || '';
+    } else if (type === 'link') {
+        payload.title = b.querySelector('[data-field="title"]')?.innerText || '';
+        payload.url = b.querySelector('[data-field="url"]')?.innerText || '';
+    } else {
+        exit;
+    }
 
 	fetch("admin.php", {
 		method: "POST",
