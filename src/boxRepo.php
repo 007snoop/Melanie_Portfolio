@@ -171,22 +171,56 @@ class BoxRepository
         }
     }
 
-    public function updateBox(int $id, string $title, string $content, bool $on_off)
+    public function updateTextBox(int $id, string $title, string $content) 
+    {
+        $db = getDB();
+
+        $stmt = $db->prepare(
+            'UPDATE text_boxes
+            SET content = :content,
+            title = :title
+            WHERE box_id = :box_id'
+        );
+
+        $stmt->execute([
+            ':title' => $title,
+            ':content' => $content,
+            ':box_id' => $id,
+            ]);
+    }
+
+    public function updateLinkBox(int $id, string $title, string $url, ?string $desc) 
+    {
+        $db = getDB();
+
+        $stmt = $db->prepare(
+            'UPDATE link_boxes 
+            SET title = :title,
+            url = :url,
+            description = :desc
+            WHERE box_id = :box_id'
+        );
+
+        $stmt->execute([
+            ':title' => $title,
+            ':url' => $url,
+            ':desc' => $desc,
+            ':box_id' => $id,
+        ]);
+    }
+
+    public function updateEnabled(int $id, bool $on_off)
     {
         $db = getDb();
 
         $stmt = $db->prepare(
             'UPDATE boxes
              SET 
-             title = :title, 
-             content = :content, 
              on_off = :on_off
              WHERE id = :id'
         );
 
         $stmt->execute([
-            ':title' => $title,
-            ':content' => $content,
             ':on_off' => $on_off ? 1 : 0,
             ':id' => $id
         ]);

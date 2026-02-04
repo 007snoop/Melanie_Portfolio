@@ -74,7 +74,7 @@ function renderTextBox(array $layout, array $content, bool $editable)
                 </form>
 
             <?php else: ?>
-                
+
                 <div class="box-content">
                     <?= nl2br(htmlspecialchars($content['content']) ?? '') ?>
                 </div>
@@ -91,7 +91,13 @@ function renderLinkBox(array $layout, array $content, bool $editable)
 {
     $id = (int) $layout['id'];
     $title = htmlspecialchars($content['title'] ?? 'Link');
-    $url   = htmlspecialchars($content['url'] ?? '#');
+    $desc = htmlspecialchars($content['description'] ?? '');
+    $url = htmlspecialchars($content['url'] ?? '#');
+
+    // Preview card URL rendering
+    $parsed = parse_url($url);
+    $domain = $parsed['host'] ?? '';
+    $favion = $domain ? "https://www.google.com/s2/favicons?domain={$domain}&sz=64" : '';
 
     // ensure GridStack coordinates are always integers
     $x = (int) ($layout['grid_x'] ?? 0);
@@ -114,7 +120,26 @@ function renderLinkBox(array $layout, array $content, bool $editable)
                     <button type="submit">Save</button>
                 </form>
             <?php else: ?>
-                <a href="<?= $url ?>" target="_blank" rel="noopener noreferrer"><?= $title ?></a>
+                <a class="link-card" href="<?= $url ?>" target="_blank" rel="noopener noreferrer">
+                    <div class="link-favicon">
+                        <img src="<?= $favion ?>" alt="">
+                    </div>
+
+                    <div class="link-meta">
+                        <div class="link-title">
+                            <?= $title ?>
+                        </div>
+
+                        <?php if (!empty($desc)): ?>
+                            <div class="link-description">
+                                <?= $desc ?>
+                            </div>
+                        <?php endif; ?>
+                        <div class="link-domain">
+                            <?= htmlspecialchars($domain) ?>
+                        </div>
+                    </div>
+                </a>
             <?php endif; ?>
         </div>
     </div>
@@ -145,4 +170,57 @@ function renderDeleteButton(array $box): void
     </form>
     <?php
 }
+?>
+
+<?php
+function fetchLinkMetadata(string $url)
+{
+    $content = stream_context_create([
+        'http' => [
+            'timeout' => 5,
+            'user_agent' => 'Mozilla/5.0 (LinkPreviewBot)'
+        ]
+    ]);
+
+    $html = @file_get_contents($url, false, $content);
+
+    if (!$html) {
+        return [];
+    }
+
+    libxml_use_internal_errors(true);
+
+    $dom = new DOMDocument();
+    $dom->loadHTML($html);
+    $xpath = new DOMXPath($dom);
+
+    $meta = [
+        'title' => null,
+        'description' => null,
+    ];
+    // opengraph title
+    $nodes = $xpath->query('//meta[@property="og:title"]/@content');
+    if ($nodes->length) {
+        $meta['title'] = $nodes->item(0)->nodeValue;
+    }
+    // title fallback
+    if (!$meta['title']) {
+        $titleNode = $dom->getElementsByTagName('title')->item(0);
+        $meta['title'] = $titleNode?->textContent;
+    }
+    //opengraph description
+    $nodes = $xpath->query('//meta[@property="og:description"]/@content');
+    if ($nodes->length) {
+        $meta['description'] = $nodes->item(0)->nodeValue;
+    }
+    //description fallback
+    if (!$meta['description']) {
+        $nodes = $xpath->query('//meta[@name="description"]/@content');
+        if ($nodes->length) {
+            $meta['description'] = $nodes->item(0)->nodeValue;
+        }
+    }
+    return array_filter($meta);
+}
+
 ?>
