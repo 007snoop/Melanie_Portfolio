@@ -64,6 +64,12 @@ body {
 
 .grid-stack-item:hover .box-remove {
     opacity: 1;
+    pointer-events: auto;
+}
+
+.grid-stack-item:hover .text-toolbar {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 
@@ -108,5 +114,29 @@ body {
 .link-domain {
     font-size: 0.75em;
     opacity: 0.7;
+}
+
+/* TEXT FEATURES */
+
+.text-toolbar {
+    position: absolute;
+    display: flex;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0);
+    padding: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease-in-out;
+    z-index: 1000;
+}
+
+.text-toolbar.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.toolbar-btn.active {
+    background: #007bff;
+    color: white;
 }
 

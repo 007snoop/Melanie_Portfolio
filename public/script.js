@@ -1,5 +1,6 @@
 // variables
 const container = document.querySelector(".grid-stack");
+const toolbar = document.getElementById("floating-toolbar");
 
 // admin page
 
@@ -17,22 +18,22 @@ document.addEventListener("DOMContentLoaded", () => {
 	window.grid = grid;
 
 	document.addEventListener("submit", (e) => {
-        const form = e.target;
+		const form = e.target;
 		if (!form.classList.contains("box-form")) return;
 		e.preventDefault();
 
-        const item = form.closest('.grid-stack-item');
-        if (!item) return;
+		const item = form.closest(".grid-stack-item");
+		if (!item) return;
 
-        form.querySelectorAll('[contenteditable][data-field]').forEach(el => {
-            const field = el.dataset.field;
-            const hidden = form.querySelector(`input[name="${field}"]`);
-            if (hidden) {
-                hidden.value = el.innerText.trim();
-            }
-        });
+		form.querySelectorAll("[contenteditable][data-field]").forEach((el) => {
+			const field = el.dataset.field;
+			const hidden = form.querySelector(`input[name="${field}"]`);
+			if (hidden) {
+				hidden.value = el.innerHTML.trim();
+			}
+		});
 
-        updateBox(item);
+		updateBox(item);
 	});
 
 	grid.on("change", saveOrder);
@@ -71,44 +72,102 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	}
 
+	/* ------ TOOLBAR FLOAT ------ */
+
+	document.addEventListener("focusin", (e) => {
+		const boxContent = e.target.closest(".box-content[contenteditable]");
+		if (!boxContent) {
+			return;
+		}
+
+		//show toolbar
+		toolbar.classList.add("active");
+
+		//put the tool bar above active box
+		const r = boxContent.getBoundingClientRect();
+		toolbar.style.top =
+			window.scrollY + r.top - toolbar.offsetHeight - 4 + "px";
+		toolbar.style.left = window.scrollX + r.left + "px";
+
+		toolbar.dataset.activeBoxId =
+			boxContent.closest(".grid-stack-item").dataset.id;
+
+		updateToolbarState(boxContent);
+
+		// attach input listner for live updates
+		boxContent.addEventListener("input", () => updateToolbarState(boxContent));
+	});
+
+	document.addEventListener("focusout", (e) => {
+		const boxContent = e.target.closest(".box-content[contenteditable]");
+		setTimeout(() => {
+			if (
+				!document.activeElement.closest(".box-content[contenteditable]") &&
+				!document.activeElement.closest(".text-toolbar")
+			) {
+				toolbar.classList.remove("active");
+			}
+		}, 50);
+		updateToolbarState(boxContent);
+	});
+
 	document.addEventListener("click", (e) => {
 		if (!window.IS_ADMIN) {
 			return;
 		}
+		/* ------ DELETE BUTTON ------ */
+		const deleteBtn = e.target.closest(".box-remove");
+		if (deleteBtn) {
+			const item = deleteBtn.closest(".grid-stack-item");
+			if (!item) {
+				return;
+			}
+			const id = item.dataset.id;
+			if (!id) {
+				return;
+			}
 
-		const btn = e.target.closest(".box-remove");
-		if (!btn) {
-			return;
-		}
-		const item = btn.closest(".grid-stack-item");
-		if (!item) {
-			return;
-		}
-		const id = item.dataset.id;
-		if (!id) {
-			return;
-		}
-
-		fetch("/api/deleteBox.php", {
-			method: "POST",
-			headers: { "Content-type": "application/json" },
-			body: JSON.stringify({ id }),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new Error("Delete failed");
-				}
-				window.grid.removeWidget(item);
+			fetch("/api/deleteBox.php", {
+				method: "POST",
+				headers: { "Content-type": "application/json" },
+				body: JSON.stringify({ id }),
 			})
-			.catch((err) => {
-				console.error(err);
-				alert("failed to delete box");
-			});
+				.then((res) => {
+					if (!res.ok) {
+						throw new Error("Delete failed");
+					}
+					window.grid.removeWidget(item);
+				})
+				.catch((err) => {
+					console.error(err);
+					alert("failed to delete box");
+				});
+		}
+		/* ------ TOOLBAR BUTTONS ------ */
+		const toolbarBtn = e.target.closest(".toolbar-btn");
+		if (toolbarBtn) {
+			if (toolbarBtn.dataset.cmd) {
+				try {
+					document.execCommand(toolbarBtn.dataset.cmd, false, null);
+				} catch (err) {
+					console.warn("execCommand not supported:", err);
+				}
+			}
+
+			if (toolbarBtn.dataset.align) {
+				try {
+					document.execCommand("justify" + toolbarBtn.dataset.align);
+				} catch (err) {
+					console.warn("execCommand not supported:", err);
+				}
+			}
+			return;
+		}
 	});
 });
 
 /* Functions */
-function saveOrder(event, items) {
+function saveOrder(_event, items) {
 	const order = items.map((i) => ({
 		id: i.el.dataset.id,
 		x: i.x,
@@ -129,25 +188,27 @@ function autoResizeEditable(el) {
 	el.style.height = el.scrollHeight + "px";
 }
 function updateBox(b) {
-    const form = b.querySelector('.box-form');
-    const type = form.querySelector('input[name="type"]')?.value;
+	const form = b.querySelector(".box-form");
+	const type = form.querySelector('input[name="type"]')?.value;
 
 	const payload = {
 		action: "update",
 		id: b.dataset.id,
-        type: type,
+		type: type,
 		on_off: !b.classList.contains("disabled"),
 	};
 
-    if (type === 'text') {
-        payload.title = b.querySelector('[data-field="title"]')?.innerText || 'text-box';
-        payload.content = b.querySelector('[data-field="content"]')?.innerText || '';
-    } else if (type === 'link') {
-        payload.title = b.querySelector('[data-field="title"]')?.innerText || '';
-        payload.url = b.querySelector('[data-field="url"]')?.innerText || '';
-    } else {
-        exit;
-    }
+	if (type === "text") {
+		payload.title =
+			b.querySelector('[data-field="title"]')?.innerText || "text-box";
+		payload.content =
+			b.querySelector('[data-field="content"]')?.innerHTML || "";
+	} else if (type === "link") {
+		payload.title = b.querySelector('[data-field="title"]')?.innerText || "";
+		payload.url = b.querySelector('[data-field="url"]')?.innerText || "";
+	} else {
+		return;
+	}
 
 	fetch("admin.php", {
 		method: "POST",
@@ -194,10 +255,31 @@ function addBox(payload) {
 				console.error("gridstack node not attached");
 				return;
 			}
-
 		});
 }
 
-function removeBox(itemEl) {
-	window.grid.removeWidget(itemEl);
+function updateToolbarState(boxContent) {
+	toolbar.querySelectorAll(".toolbar-btn").forEach((toolbarBtn) => {
+		toolbarBtn.classList.remove("active");
+		if (toolbarBtn.dataset.cmd) {
+			try {
+				if (document.queryCommandState(toolbarBtn.dataset.cmd)) {
+					toolbarBtn.classList.add("active");
+				}
+			} catch (err) {
+				console.warn("queryCommandState not supported:", err);
+			}
+		}
+
+		if (toolbarBtn.dataset.align) {
+			const align = window.getComputedStyle(boxContent).textAlign;
+			if (
+				(toolbarBtn.dataset.align === "left" && align === "left") ||
+				(toolbarBtn.dataset.align === "center" && align === "center") ||
+				(toolbarBtn.dataset.align === "right" && align === "right")
+			) {
+				toolbarBtn.classList.add("active");
+			}
+		}
+	});
 }

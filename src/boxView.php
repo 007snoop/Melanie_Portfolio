@@ -61,13 +61,14 @@ function renderTextBox(array $layout, array $content, bool $editable)
         <div class="grid-stack-item-content">
             <?php if ($editable): ?>
                 <button type="button" class="box-remove" title="Delete box">&#10006;</button>
+
                 <form method='post' class="box-form">
                     <input type="hidden" name="id" value="<?= (int) $layout['id'] ?>">
                     <input type="hidden" name="type" value="text">
                     <input type="hidden" name="title" value="<?= htmlspecialchars($content['title']) ?? '' ?>">
 
                     <div class="box-content" contenteditable="true" data-field="content">
-                        <?= htmlspecialchars($content['content']) ?? '' ?>
+                        <?= $content['content'] ?? '' ?>
                     </div>
 
                     <button type="submit">Save</button>
@@ -76,7 +77,7 @@ function renderTextBox(array $layout, array $content, bool $editable)
             <?php else: ?>
 
                 <div class="box-content">
-                    <?= nl2br(htmlspecialchars($content['content']) ?? '') ?>
+                    <?= $content['content'] ?? '' ?>
                 </div>
 
             <?php endif; ?>

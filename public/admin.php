@@ -94,8 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($data['action'])) {
                 $url,
                 $desc
             );
-         /*    var_dump($meta);
-            exit; */
+            /*    var_dump($meta);
+               exit; */
         }
 
         exit;
@@ -129,6 +129,20 @@ $boxes = $boxRepo->getLayoutBoxes(false);
 </head>
 
 <body data-page="admin">
+    <div class="text-toolbar" id="floating-toolbar">
+        <button class="toolbar-btn" type="button" data-cmd="bold" onmousedown="event.preventDefault()"><b>B</b></button>
+        <button class="toolbar-btn" type="button" data-cmd="italic"
+            onmousedown="event.preventDefault()"><i>I</i></button>
+        <button class="toolbar-btn" type="button" data-cmd="underline"
+            onmousedown="event.preventDefault()"><u>U</u></button>
+
+        <button class="toolbar-btn" type="button" data-align="left"
+            onmousedown="event.preventDefault()">&#8592;</button>
+        <button class="toolbar-btn" type="button" data-align="center"
+            onmousedown="event.preventDefault()">&#8645;</button>
+        <button class="toolbar-btn" type="button" data-align="right"
+            onmousedown="event.preventDefault()">&#8594;</button>
+    </div>
     <h1>Manage Boxes</h1>
 
     <?php renderAddBoxButtons(); ?>
