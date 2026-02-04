@@ -80,3 +80,5 @@ create table link_boxes (
     title varchar(255) null,
     url text not null,
     foreign key (box_id) references boxes(id) on delete cascade);
+
+ALTER TABLE link_boxes ADD COLUMN description TEXT NULL;

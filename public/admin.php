@@ -52,6 +52,8 @@ $isAdmin = isset($_SESSION['admin']) && $_SESSION['admin'] === true;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($data['action'])) {
     $boxRepo = new BoxRepository();
 
+
+
     // add text box
     if ($data['action'] === 'add') {
         $boxRepo->addTextBox(
@@ -67,19 +69,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($data['action'])) {
         if ($data['type'] === 'text') {
             # code...
             $boxRepo->updateTextBox(
-                (int)$data['id'],
+                (int) $data['id'],
                 $data['title'] ?? '',
                 $data['content'] ?? ''
             );
         }
 
         if ($data['type'] === 'link') {
-            # code...
+            // trim url and sanitize the output
+            $url = trim($data['url'] ?? '');
+            if ($url && !str_starts_with($url, 'http://') && !str_starts_with($url, 'https://')) {
+                $url = "https://$url";
+            }
+            $meta = fetchLinkMetadata($url);
+            $title = trim($data['title'] ?? '');
+            $desc = $meta['description'] ?? '';
+            if ($title === '' && isset($meta['title'])) {
+                $title = $meta['title'];
+            }
+
             $boxRepo->updateLinkBox(
-                (int)$data['id'],
-                $data['title'] ?? '',
-                $data['url'] ?? ''
+                (int) $data['id'],
+                $title,
+                $url,
+                $desc
             );
+         /*    var_dump($meta);
+            exit; */
         }
 
         exit;

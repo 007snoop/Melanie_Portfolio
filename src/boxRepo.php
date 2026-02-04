@@ -189,20 +189,22 @@ class BoxRepository
             ]);
     }
 
-    public function updateLinkBox(int $id, string $title, string $url) 
+    public function updateLinkBox(int $id, string $title, string $url, ?string $desc) 
     {
         $db = getDB();
 
         $stmt = $db->prepare(
             'UPDATE link_boxes 
             SET title = :title,
-            url = :url
+            url = :url,
+            description = :desc
             WHERE box_id = :box_id'
         );
 
         $stmt->execute([
             ':title' => $title,
             ':url' => $url,
+            ':desc' => $desc,
             ':box_id' => $id,
         ]);
     }
