@@ -99,8 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	document.addEventListener("focusout", (e) => {
-		const boxContent = e.target.closest(".box-content[contenteditable]");
 		setTimeout(() => {
+            const activeBox = document.querySelector(`.grid-stack-item[data-id="${toolbar.dataset.activeBox}"] .box-content[contenteditable]`);
 			if (
 				!document.activeElement.closest(".box-content[contenteditable]") &&
 				!document.activeElement.closest(".text-toolbar")
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				toolbar.classList.remove("active");
 			}
 		}, 50);
-		updateToolbarState(boxContent);
+		updateToolbarState(activeBox);
 	});
 
 	document.addEventListener("click", (e) => {
@@ -146,6 +146,10 @@ document.addEventListener("DOMContentLoaded", () => {
 		/* ------ TOOLBAR BUTTONS ------ */
 		const toolbarBtn = e.target.closest(".toolbar-btn");
 		if (toolbarBtn) {
+            const activeBox = document.querySelector(`.grid-stack-item[data-id="${toolbar.dataset.activeBoxId}"] .box-content[contenteditable]`);
+
+            if (!activeBox) return;
+
 			if (toolbarBtn.dataset.cmd) {
 				try {
 					document.execCommand(toolbarBtn.dataset.cmd, false, null);
@@ -161,6 +165,10 @@ document.addEventListener("DOMContentLoaded", () => {
 					console.warn("execCommand not supported:", err);
 				}
 			}
+
+            updateToolbarState(activeBox);
+
+            activeBox.focus();
 			return;
 		}
 	});
@@ -259,6 +267,11 @@ function addBox(payload) {
 }
 
 function updateToolbarState(boxContent) {
+
+    if (!boxContent || !(boxContent instanceof HTMLElement)) {
+        return;
+    }
+
 	toolbar.querySelectorAll(".toolbar-btn").forEach((toolbarBtn) => {
 		toolbarBtn.classList.remove("active");
 		if (toolbarBtn.dataset.cmd) {
