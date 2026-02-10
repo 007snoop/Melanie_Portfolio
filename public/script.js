@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	/* ------ TOOLBAR FLOAT ------ */
 
 	document.addEventListener("focusin", (e) => {
-		const boxContent = e.target.closest(".box-content[contenteditable]");
+		const boxContent = e.target.closest(".box-content[contenteditable][data-editor='text']");
 		if (!boxContent) {
 			return;
 		}

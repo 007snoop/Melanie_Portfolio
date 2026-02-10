@@ -67,7 +67,7 @@ function renderTextBox(array $layout, array $content, bool $editable)
                     <input type="hidden" name="type" value="text">
                     <input type="hidden" name="title" value="<?= htmlspecialchars($content['title']) ?? '' ?>">
 
-                    <div class="box-content" contenteditable="true" data-field="content">
+                    <div class="box-content" contenteditable="true" data-field="content" data-editor="text">
                         <?= $content['content'] ?? '' ?>
                     </div>
 
