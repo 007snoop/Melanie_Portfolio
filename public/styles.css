@@ -1,154 +1,153 @@
 body {
-    font-family: system-ui, sans-serif;
-    max-width: 480px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+	font-family: system-ui, sans-serif;
+	max-width: 480px;
+	margin: 2rem auto;
+	padding: 0 1rem;
 }
 
 .profile {
-    text-align: center;
-    margin-bottom: 2rem;
+	text-align: center;
+	margin-bottom: 2rem;
 }
 
 .links ul {
-    list-style: none;
-    padding: 0;
+	list-style: none;
+	padding: 0;
 }
 
 .links li {
-    margin-bottom: 0.75rem;
+	margin-bottom: 0.75rem;
 }
 
 .links a {
-    display: block;
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 6px;
+	display: block;
+	padding: 0.75rem;
+	border: 1px solid #ccc;
+	text-align: center;
+	text-decoration: none;
+	border-radius: 6px;
 }
 
 .grid-stack-item-content {
-    position: relative;
-    background: #fafafa;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 8px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    transition: opacity 0.2s ease, background 0.2s ease;
-    overflow: hidden !important;
+	position: relative;
+	background: #fafafa;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	padding: 8px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	transition:
+		opacity 0.2s ease,
+		background 0.2s ease;
+	overflow: hidden !important;
 }
 
 .grid-stack-item-content.disabled {
-    opacity: 0.5;
+	opacity: 0.5;
 }
 
 .box-remove {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 22px;
-    height: 22px;
-    border: none;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease-in-out;
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	width: 22px;
+	height: 22px;
+	border: none;
+	border-radius: 50%;
+	background: rgba(0, 0, 0, 0.6);
+	color: white;
+	font-size: 16px;
+	cursor: pointer;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s ease-in-out;
 }
 
 .grid-stack-item:hover .box-remove {
-    opacity: 1;
-    pointer-events: auto;
+	opacity: 1;
+	pointer-events: auto;
 }
 
 .grid-stack-item:hover .text-toolbar {
-    opacity: 1;
-    pointer-events: auto;
+	opacity: 1;
+	pointer-events: auto;
 }
-
 
 /*  LINK CARD  */
 
 .link-card {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    padding: 10px;
-    border-radius: 6px;
-    text-decoration: none ;
-    color: inherit;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	padding: 10px;
+	border-radius: 6px;
+	text-decoration: none;
+	color: inherit;
+	border: 1px solid rgba(0, 0, 0, 0.1);
 
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
 }
 
 .link-card:hover {
-    background: rgba(0, 0, 0, 0.06);
+	background: rgba(0, 0, 0, 0.06);
 }
 
 .link-favicon img {
-    width: 32px;
-    height: 32px;
-
+	width: 32px;
+	height: 32px;
 }
 
 .link-meta {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	flex: 1;
 }
 
 .link-title {
-    font-weight: 600;
+	font-weight: 600;
 }
 
 .link-description {
-    font-weight: 100;
-    color: grey;
-    font-size: 0.9em;display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    overflow: hidden;
+	font-weight: 100;
+	color: grey;
+	font-size: 0.9em;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	overflow: hidden;
 }
 
-
 .link-domain {
-    font-size: 0.75em;
-    opacity: 0.7;
+	font-size: 0.75em;
+	opacity: 0.7;
 }
 
 /* TEXT FEATURES */
 
 .text-toolbar {
-    position: absolute;
-    display: flex;
-    gap: 4px;
-    background: rgba(255, 255, 255, 0);
-    padding: 4px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease-in-out;
-    z-index: 1000;
+	position: absolute;
+	display: flex;
+	gap: 4px;
+	background: rgba(255, 255, 255, 0);
+	padding: 4px;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s ease-in-out;
+	z-index: 1000;
 }
 
 .text-toolbar.active {
-    opacity: 1;
-    pointer-events: auto;
+	opacity: 1;
+	pointer-events: auto;
 }
 
 .toolbar-btn.active {
-    background: #007bff;
-    color: white;
+	background: #007bff;
+	color: white;
 }
-
