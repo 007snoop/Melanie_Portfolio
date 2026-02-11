@@ -99,10 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	document.addEventListener("focusout", (e) => {
+        const activeBox = document.querySelector(`.grid-stack-item[data-id="${toolbar.dataset.activeBox}"] .box-content[contenteditable]`);
 		setTimeout(() => {
-            const activeBox = document.querySelector(`.grid-stack-item[data-id="${toolbar.dataset.activeBox}"] .box-content[contenteditable]`);
 			if (
-				!document.activeElement.closest(".box-content[contenteditable]") &&
+				!document.activeElement.closest(".box-content[contenteditable][data-editor='text']") &&
 				!document.activeElement.closest(".text-toolbar")
 			) {
 				toolbar.classList.remove("active");
