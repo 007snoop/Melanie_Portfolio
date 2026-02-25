@@ -143,6 +143,9 @@ $boxes = $boxRepo->getLayoutBoxes(false);
         <button class="toolbar-btn" type="button" data-align="right"
             onmousedown="event.preventDefault()">&#8594;</button>
     </div>
+    <h1>Edit Profile</h1>
+    <a href="edit_profile.php">Edit Profile</a>
+    <br>
     <h1>Manage Boxes</h1>
 
     <?php renderAddBoxButtons(); ?>

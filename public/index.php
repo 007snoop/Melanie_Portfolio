@@ -34,7 +34,7 @@ $links = $linkRepo->getVisibleLinks();
 
 <body data-page="public">
     <div class="profile">
-        <a href="edit_profile.php">Edit Profile</a>
+        
 
         <?php if (!empty($profile['a_url'])): ?>
             <img src="<?= htmlspecialchars($profile['a_url']) ?>" alt="Profile Image" class="profile-image">
