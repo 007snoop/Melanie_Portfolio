@@ -6,7 +6,11 @@ admin dashboard controls for main landing
 -->
 
 <?php
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_strict_mode', 1);
+
 session_start();
+
 $dotenvPath = __DIR__ . '/../.env';
 $isJson = str_contains($_SERVER['CONTENT_TYPE'] ?? '', 'application/json');
 $env = parse_ini_file($dotenvPath);
@@ -25,25 +29,10 @@ if ($isJson) {
 require_once __DIR__ . '/../src/boxRepo.php';
 require_once __DIR__ . '/../src/boxView.php';
 
-
-/* ----- LOGIN HANDLER ----- */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($data['password'])) {
-    if ($data['password'] === $env['ADMIN_PASSWORD']) { #change password later
-        $_SESSION['admin'] = true;
-
-        header('Location: admin.php');
-        exit;
-    }
-}
-/* ----- BLOCK ACCESS IF NOT LOGGED IN ----- */
-if (!isset($_SESSION['admin'])): ?>
-    <form method="post">
-        <input type="password" name="password" placeholder="Password">
-        <button type="submit">Login</button>
-    </form>
-    <?php
+if (!isset($_SESSION['admin']) || $_SESSION['admin'] !== true) {
+    header('Location: login.php');
     exit;
-endif;
+}
 
 /* ----- CONFIRM ADMIN ----- */
 $isAdmin = isset($_SESSION['admin']) && $_SESSION['admin'] === true;

@@ -11,7 +11,7 @@ $profile = $repo->getProfile();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Profile Edit</title>
 </head>
 <body>
     <form method="POST" action="api/updateProfile.php" enctype="multipart/form-data">
