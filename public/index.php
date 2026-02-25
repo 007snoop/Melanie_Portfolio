@@ -34,6 +34,11 @@ $links = $linkRepo->getVisibleLinks();
 
 <body data-page="public">
     <div class="profile">
+        <a href="edit_profile.php">Edit Profile</a>
+
+        <?php if (!empty($profile['a_url'])): ?>
+            <img src="<?= htmlspecialchars($profile['a_url']) ?>" alt="Profile Image" class="profile-image">
+        <?php endif; ?>
         <h1>
             <?= htmlspecialchars($profile['display_name']) ?>
         </h1>
@@ -54,10 +59,10 @@ $links = $linkRepo->getVisibleLinks();
         </ul>
     </div>
     <div class="grid-stack">
-     <?php 
-     $isAdmin = false;
-     foreach ($boxes as $box) {
-        $type = $box['type'] ?? null;
+        <?php
+        $isAdmin = false;
+        foreach ($boxes as $box) {
+            $type = $box['type'] ?? null;
             switch ($type) {
                 case 'text':
                     $content = $boxRepo->getTextBox($box['id']);
